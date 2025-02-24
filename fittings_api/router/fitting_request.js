@@ -92,7 +92,16 @@ fittingRequestRouter.get("/fitting-request/:id", async (req, res) => {
     const fittingRequest = await prisma.fittingRequest.findUnique({
       where: { id: req.params.id },
       include: {
-        user: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+            role: true,
+            golf_club_size: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
         fittingProgresses: true,
       },
     });

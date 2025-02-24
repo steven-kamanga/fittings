@@ -14,15 +14,6 @@ const isValid = async (email) => {
   return !existingUser;
 };
 
-const authenticateUser = async (email, password) => {
-  const prisma = getPrismaInstance();
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (user) {
-    return await bcrypt.compare(password, user.password_hash);
-  }
-  return false;
-};
-
 /**
  * @swagger
  * /customer/register:
@@ -255,7 +246,7 @@ regd_users.get("/auth/users", async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-regd_users.get("/auth/me", async (req, res) => {
+regd_users.get("/me", async (req, res) => {
   try {
     // Get the token from the Authorization header
     const authHeader = req.headers["authorization"];
