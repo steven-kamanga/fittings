@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPrismaInstance } = require('../prisma/prisma');
+const { getPrismaInstance } = require("../prisma/prisma");
 const swingAnalysisRouter = express.Router();
 
 /**
@@ -34,27 +34,27 @@ const swingAnalysisRouter = express.Router();
  *         description: Internal server error
  */
 swingAnalysisRouter.post("/swing-analysis", async (req, res) => {
-    const { userId, date, comments } = req.body;
+  const { userId, date, comments } = req.body;
 
-    if (!userId || !date) {
-        return res.status(400).json({ message: "User ID and date are required" });
-    }
+  if (!userId || !date) {
+    return res.status(400).json({ message: "User ID and date are required" });
+  }
 
-    try {
-        const prisma = getPrismaInstance();
-        const swingAnalysis = await prisma.swingAnalysis.create({
-            data: {
-                userId,
-                date: new Date(date),
-                comments,
-                status: 'scheduled'
-            }
-        });
-        res.status(201).json(swingAnalysis);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+  try {
+    const prisma = getPrismaInstance();
+    const swingAnalysis = await prisma.swingAnalysis.create({
+      data: {
+        userId,
+        date: new Date(date),
+        comments,
+        status: "scheduled",
+      },
+    });
+    res.status(201).json(swingAnalysis);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -79,22 +79,22 @@ swingAnalysisRouter.post("/swing-analysis", async (req, res) => {
  *         description: Internal server error
  */
 swingAnalysisRouter.get("/swing-analysis/:id", async (req, res) => {
-    try {
-        const prisma = getPrismaInstance();
-        const swingAnalysis = await prisma.swingAnalysis.findUnique({
-            where: { id: req.params.id },
-            include: { user: true }
-        });
+  try {
+    const prisma = getPrismaInstance();
+    const swingAnalysis = await prisma.swingAnalysis.findUnique({
+      where: { id: req.params.id },
+      include: { user: true },
+    });
 
-        if (!swingAnalysis) {
-            return res.status(404).json({ message: "Swing analysis not found" });
-        }
-
-        res.status(200).json(swingAnalysis);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+    if (!swingAnalysis) {
+      return res.status(404).json({ message: "Swing analysis not found" });
     }
+
+    res.status(200).json(swingAnalysis);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -138,29 +138,29 @@ swingAnalysisRouter.get("/swing-analysis/:id", async (req, res) => {
  *         description: Internal server error
  */
 swingAnalysisRouter.put("/swing-analysis/:id", async (req, res) => {
-    const { date, status, comments, video_url, analysis_data } = req.body;
+  const { date, status, comments, video_url, analysis_data } = req.body;
 
-    try {
-        const prisma = getPrismaInstance();
-        const updatedSwingAnalysis = await prisma.swingAnalysis.update({
-            where: { id: req.params.id },
-            data: {
-                date: date ? new Date(date) : undefined,
-                status,
-                comments,
-                video_url,
-                analysis_data
-            }
-        });
+  try {
+    const prisma = getPrismaInstance();
+    const updatedSwingAnalysis = await prisma.swingAnalysis.update({
+      where: { id: req.params.id },
+      data: {
+        date: date ? new Date(date) : undefined,
+        status,
+        comments,
+        video_url,
+        analysis_data,
+      },
+    });
 
-        res.status(200).json(updatedSwingAnalysis);
-    } catch (error) {
-        console.error(error);
-        if (error.code === 'P2025') {
-            return res.status(404).json({ message: "Swing analysis not found" });
-        }
-        res.status(500).json({ message: "Internal Server Error" });
+    res.status(200).json(updatedSwingAnalysis);
+  } catch (error) {
+    console.error(error);
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Swing analysis not found" });
     }
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -185,20 +185,20 @@ swingAnalysisRouter.put("/swing-analysis/:id", async (req, res) => {
  *         description: Internal server error
  */
 swingAnalysisRouter.delete("/swing-analysis/:id", async (req, res) => {
-    try {
-        const prisma = getPrismaInstance();
-        await prisma.swingAnalysis.delete({
-            where: { id: req.params.id }
-        });
+  try {
+    const prisma = getPrismaInstance();
+    await prisma.swingAnalysis.delete({
+      where: { id: req.params.id },
+    });
 
-        res.status(200).json({ message: "Swing analysis deleted successfully" });
-    } catch (error) {
-        console.error(error);
-        if (error.code === 'P2025') {
-            return res.status(404).json({ message: "Swing analysis not found" });
-        }
-        res.status(500).json({ message: "Internal Server Error" });
+    res.status(200).json({ message: "Swing analysis deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Swing analysis not found" });
     }
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 module.exports = swingAnalysisRouter;

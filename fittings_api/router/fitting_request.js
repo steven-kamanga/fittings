@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPrismaInstance } = require('../prisma/prisma');
+const { getPrismaInstance } = require("../prisma/prisma");
 const fittingRequestRouter = express.Router();
 
 /**
@@ -34,35 +34,35 @@ const fittingRequestRouter = express.Router();
  *         description: Internal server error
  */
 fittingRequestRouter.post("/fitting-request", async (req, res) => {
-    const { userId, date, comments } = req.body;
+  const { userId, date, comments } = req.body;
 
-    if (!userId || !date) {
-        return res.status(400).json({ message: "User ID and date are required" });
-    }
+  if (!userId || !date) {
+    return res.status(400).json({ message: "User ID and date are required" });
+  }
 
-    try {
-        const prisma = getPrismaInstance();
-        const fittingRequest = await prisma.fittingRequest.create({
-            data: {
-                userId,
-                date: new Date(date),
-                comments,
-                status: 'submitted',
-                fittingProgresses: {
-                    create: {
-                        step: 'submitted'
-                    }
-                }
-            },
-            include: {
-                fittingProgresses: true
-            }
-        });
-        res.status(201).json(fittingRequest);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
+  try {
+    const prisma = getPrismaInstance();
+    const fittingRequest = await prisma.fittingRequest.create({
+      data: {
+        userId,
+        date: new Date(date),
+        comments,
+        status: "submitted",
+        fittingProgresses: {
+          create: {
+            step: "submitted",
+          },
+        },
+      },
+      include: {
+        fittingProgresses: true,
+      },
+    });
+    res.status(201).json(fittingRequest);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -87,25 +87,25 @@ fittingRequestRouter.post("/fitting-request", async (req, res) => {
  *         description: Internal server error
  */
 fittingRequestRouter.get("/fitting-request/:id", async (req, res) => {
-    try {
-        const prisma = getPrismaInstance();
-        const fittingRequest = await prisma.fittingRequest.findUnique({
-            where: { id: req.params.id },
-            include: {
-                user: true,
-                fittingProgresses: true
-            }
-        });
+  try {
+    const prisma = getPrismaInstance();
+    const fittingRequest = await prisma.fittingRequest.findUnique({
+      where: { id: req.params.id },
+      include: {
+        user: true,
+        fittingProgresses: true,
+      },
+    });
 
-        if (!fittingRequest) {
-            return res.status(404).json({ message: "Fitting request not found" });
-        }
-
-        res.status(200).json(fittingRequest);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Internal Server Error" });
+    if (!fittingRequest) {
+      return res.status(404).json({ message: "Fitting request not found" });
     }
+
+    res.status(200).json(fittingRequest);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -145,36 +145,38 @@ fittingRequestRouter.get("/fitting-request/:id", async (req, res) => {
  *         description: Internal server error
  */
 fittingRequestRouter.put("/fitting-request/:id", async (req, res) => {
-    const { date, status, comments } = req.body;
-    const id = req.params.id;
+  const { date, status, comments } = req.body;
+  const id = req.params.id;
 
-    try {
-        const prisma = getPrismaInstance();
-        const updatedFittingRequest = await prisma.fittingRequest.update({
-            where: { id },
-            data: {
-                date: date ? new Date(date) : undefined,
-                status,
-                comments,
-                fittingProgresses: status ? {
-                    create: {
-                        step: status,
-                        completed_at: new Date()
-                    }
-                } : undefined
-            },
-            include: {
-                fittingProgresses: true
+  try {
+    const prisma = getPrismaInstance();
+    const updatedFittingRequest = await prisma.fittingRequest.update({
+      where: { id },
+      data: {
+        date: date ? new Date(date) : undefined,
+        status,
+        comments,
+        fittingProgresses: status
+          ? {
+              create: {
+                step: status,
+                completed_at: new Date(),
+              },
             }
-        });
-        res.status(200).json(updatedFittingRequest);
-    } catch (error) {
-        console.error(error);
-        if (error.code === 'P2025') {
-            return res.status(404).json({ message: "Fitting request not found" });
-        }
-        res.status(500).json({ message: "Internal Server Error" });
+          : undefined,
+      },
+      include: {
+        fittingProgresses: true,
+      },
+    });
+    res.status(200).json(updatedFittingRequest);
+  } catch (error) {
+    console.error(error);
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Fitting request not found" });
     }
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 /**
@@ -199,20 +201,20 @@ fittingRequestRouter.put("/fitting-request/:id", async (req, res) => {
  *         description: Internal server error
  */
 fittingRequestRouter.delete("/fitting-request/:id", async (req, res) => {
-    try {
-        const prisma = getPrismaInstance();
-        await prisma.fittingRequest.delete({
-            where: { id: req.params.id }
-        });
+  try {
+    const prisma = getPrismaInstance();
+    await prisma.fittingRequest.delete({
+      where: { id: req.params.id },
+    });
 
-        res.status(200).json({ message: "Fitting request deleted successfully" });
-    } catch (error) {
-        console.error(error);
-        if (error.code === 'P2025') {
-            return res.status(404).json({ message: "Fitting request not found" });
-        }
-        res.status(500).json({ message: "Internal Server Error" });
+    res.status(200).json({ message: "Fitting request deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Fitting request not found" });
     }
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 module.exports = fittingRequestRouter;

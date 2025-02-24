@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { getPrismaInstance } = require('../prisma/prisma');
+const { getPrismaInstance } = require("../prisma/prisma");
 const regd_users = express.Router();
 
 const SECRET = process.env.SECRET || "kasdkjsh9uohr4jbkasnasd0sopi()D(Sjdls;l";
@@ -9,7 +9,7 @@ const SECRET = process.env.SECRET || "kasdkjsh9uohr4jbkasnasd0sopi()D(Sjdls;l";
 const isValid = async (email) => {
   const prisma = getPrismaInstance();
   const existingUser = await prisma.user.findUnique({
-    where: { email }
+    where: { email },
   });
   return !existingUser;
 };
@@ -67,7 +67,7 @@ regd_users.post("/register", async (req, res) => {
   }
 
   try {
-    if (!await isValid(email)) {
+    if (!(await isValid(email))) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
@@ -81,8 +81,8 @@ regd_users.post("/register", async (req, res) => {
         phone,
         address,
         golf_club_size,
-        role: 'consumer' // Default role
-      }
+        role: "consumer", // Default role
+      },
     });
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -134,14 +134,16 @@ regd_users.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ email: user.email, role: user.role }, SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ email: user.email, role: user.role }, SECRET, {
+      expiresIn: "1h",
+    });
 
     res.status(200).json({
       message: "User successfully logged in",
       email: user.email,
       username: user.name,
       token: token,
-      role: user.role
+      role: user.role,
     });
   } catch (error) {
     console.error(error);
@@ -184,8 +186,8 @@ regd_users.get("/auth/users/:id", async (req, res) => {
         golf_club_size: true,
         role: true,
         created_at: true,
-        updated_at: true
-      }
+        updated_at: true,
+      },
     });
 
     if (!user) {
@@ -224,8 +226,8 @@ regd_users.get("/auth/users", async (req, res) => {
         golf_club_size: true,
         role: true,
         created_at: true,
-        updated_at: true
-      }
+        updated_at: true,
+      },
     });
 
     res.status(200).json(users);
@@ -256,8 +258,8 @@ regd_users.get("/auth/users", async (req, res) => {
 regd_users.get("/auth/me", async (req, res) => {
   try {
     // Get the token from the Authorization header
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
@@ -282,8 +284,8 @@ regd_users.get("/auth/me", async (req, res) => {
           golf_club_size: true,
           role: true,
           created_at: true,
-          updated_at: true
-        }
+          updated_at: true,
+        },
       });
 
       if (!user) {
@@ -300,5 +302,5 @@ regd_users.get("/auth/me", async (req, res) => {
 
 module.exports = {
   authenticated: regd_users,
-  isValid
+  isValid,
 };
