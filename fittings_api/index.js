@@ -9,10 +9,15 @@ const swingAnalysisRouter = require('./router/swing_analysis');
 const fittingRequestRouter = require("./router/fitting_request.js");
 const adminTaskTypeRouter = require("./router/admin_task_type")
 const customerRouter = express.Router();
-
-
+const cors = require("cors")
 
 const app = express();
+
+app.use(cors({
+    origin: '*',
+    credentials: true,
+}));
+
 
 app.use(express.json());
 

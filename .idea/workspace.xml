@@ -4,12 +4,52 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="" />
+    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/fittings/src/app/api/auth/[...nextauth]/route.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/layout.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/register/page.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fittings/src/providers/session.provider.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/layout.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/tailwind.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/tailwind.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/router/auth_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/auth_users.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "steven-kamanga"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/steven-kamanga/fittings.git",
+    "accountId": "2ecc7cde-01a4-47f0-9747-1e5812b33eca"
+  }
+}]]></component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 1
 }]]></component>
@@ -21,15 +61,43 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "npm.server.executor": "Run",
     "settings.editor.selected.configurable": "aws",
+    "ts.external.directory.path": "C:\\Users\\steve\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth\[...nextauth]" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth\login" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\auth\login" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="server" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/fittings/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="server" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.server" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -45,11 +113,22 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1740379245453</updated>
-      <workItem from="1740379248741" duration="1032000" />
+      <workItem from="1740379248741" duration="7118000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

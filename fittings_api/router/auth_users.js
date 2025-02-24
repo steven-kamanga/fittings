@@ -23,7 +23,6 @@ const authenticateUser = async (email, password) => {
   return false;
 };
 
-
 /**
  * @swagger
  * /customer/register:
@@ -94,7 +93,7 @@ regd_users.post("/register", async (req, res) => {
 
 /**
  * @swagger
- * /customer/login:
+ * /customer/auth:
  *   post:
  *     summary: Login a user
  *     tags: [Users]
@@ -128,13 +127,22 @@ regd_users.post("/login", async (req, res) => {
   }
 
   try {
-    const isAuthenticated = await authenticateUser(email, password);
-    if (!isAuthenticated) {
+    const prisma = getPrismaInstance();
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user || !(await bcrypt.compare(password, user.password_hash))) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ email }, SECRET, { expiresIn: '1h' });
-    res.status(200).json({ message: "User successfully logged in", token });
+    const token = jwt.sign({ email: user.email, role: user.role }, SECRET, { expiresIn: '1h' });
+
+    res.status(200).json({
+      message: "User successfully logged in",
+      email: user.email,
+      username: user.name,
+      token: token,
+      role: user.role
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal Server Error" });
