@@ -1,7 +1,7 @@
 export default function AuthLayout({ children }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <main>
+      <section>{children}</section>
+    </main>
   );
 }

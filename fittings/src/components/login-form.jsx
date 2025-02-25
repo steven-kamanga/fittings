@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Changed from 'next/router'
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,14 +13,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export function LoginForm({ className, ...props }) {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    setIsLoading(true);
 
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
@@ -36,11 +39,13 @@ export function LoginForm({ className, ...props }) {
       if (result.error) {
         setError(result.error);
       } else {
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Sign in error:", error);
       setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -48,10 +53,10 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div
         className={
-          "flex text-2xl font-medium flex-row w-full items-center justify-center"
+          "flex text-2xl font-semibold flex-row w-full items-center justify-center"
         }
       >
-        Fittings.gg
+        Fitting<span className={"font-thin"}>.gg</span>
       </div>
       <Card className={"rounded-md"}>
         <CardHeader>
@@ -86,8 +91,8 @@ export function LoginForm({ className, ...props }) {
                 </div>
                 <Input id="password" name="password" type="password" required />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? <LoadingSpinner /> : "Login"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
