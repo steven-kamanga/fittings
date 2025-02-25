@@ -12,13 +12,10 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         try {
-          const res = await axios.post(
-            `${process.env.NEXTAUTH_URL}/auth/login`,
-            {
-              email: credentials.email,
-              password: credentials.password,
-            },
-          );
+          const res = await axios.post(`${process.env.API_URL}/auth/login`, {
+            email: credentials.email,
+            password: credentials.password,
+          });
 
           if (res.data.token) {
             return {
@@ -29,10 +26,8 @@ const handler = NextAuth({
               role: res.data.role,
             };
           }
-
           return null;
         } catch (error) {
-          console.error("Login error:", error);
           return null;
         }
       },

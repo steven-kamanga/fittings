@@ -1,10 +1,19 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Home() {
   const { data: session, status } = useSession();
 
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/auth/login`,
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
   return (
     <main>
       <h1>Home Page</h1>
@@ -20,6 +29,7 @@ export default function Home() {
           <pre>{session.accessToken}</pre>
           <h3>Full Session Details:</h3>
           <pre>{JSON.stringify(session, null, 2)}</pre>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       )}
     </main>
