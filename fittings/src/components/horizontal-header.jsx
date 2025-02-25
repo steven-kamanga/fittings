@@ -14,7 +14,7 @@ const HorizontalHeader = () => {
           <h3 className="uppercase mb-2 sm:mb-0 sm:mr-2 text-center sm:text-left">
             This Month Only: 50% off{" "}
             <span className="text-yellow-600 font-bold">Gold Tier</span> Golf
-            Clubs
+            Clubs.
           </h3>
           <Button
             variant="default"

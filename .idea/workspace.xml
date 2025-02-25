@@ -4,23 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/fittings/src/app/api/auth/[...nextauth]/route.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/layout.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fittings/src/app/auth/register/page.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fittings/src/providers/session.provider.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/globals.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/src/app/layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/layout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/src/app/page.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/page.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/tailwind.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/tailwind.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/router/auth_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/auth_users.js" afterDir="false" />
+    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="- Working auth and navigation, also updated ad banner (static route)">
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/login/page.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/components/horizontal-header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/components/horizontal-header.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,6 +37,9 @@
     "accountId": "2ecc7cde-01a4-47f0-9747-1e5812b33eca"
   }
 }]]></component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 1
 }]]></component>
@@ -68,17 +58,19 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "npm.server.executor": "Run",
-    "settings.editor.selected.configurable": "aws",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\steve\\AppData\\Roaming\\npm\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
     "ts.external.directory.path": "C:\\Users\\steve\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth\[...nextauth]" />
-      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth\login" />
-      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\auth" />
-      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\auth\login" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\(app)" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\(app)" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\public\icons" />
+      <recent name="C:\Users\steve\Documents\fittings\fittings\public" />
     </key>
   </component>
   <component name="RunManager">
@@ -113,8 +105,49 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1740379245453</updated>
-      <workItem from="1740379248741" duration="7118000" />
+      <workItem from="1740379248741" duration="23502000" />
     </task>
+    <task id="LOCAL-00001" summary="- Working auth and session management with next auth.">
+      <option name="closed" value="true" />
+      <created>1740416716466</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1740416716466</updated>
+    </task>
+    <task id="LOCAL-00002" summary="- Linted code with prettier">
+      <option name="closed" value="true" />
+      <created>1740417145321</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1740417145321</updated>
+    </task>
+    <task id="LOCAL-00003" summary="- Updated API versioning and fixed some routes.">
+      <option name="closed" value="true" />
+      <created>1740419005594</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1740419005594</updated>
+    </task>
+    <task id="LOCAL-00004" summary="- Working login screen">
+      <option name="closed" value="true" />
+      <created>1740467013978</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1740467013978</updated>
+    </task>
+    <task id="LOCAL-00005" summary="- Working auth and navigation, also updated ad banner (static route)">
+      <option name="closed" value="true" />
+      <created>1740476582610</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1740476582610</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -130,5 +163,13 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="- Working auth and session management with next auth." />
+    <MESSAGE value="- Linted code with prettier" />
+    <MESSAGE value="- Updated API versioning and fixed some routes." />
+    <MESSAGE value="- Working login screen" />
+    <MESSAGE value="- Working auth and navigation, also updated ad banner (static route)" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Working auth and navigation, also updated ad banner (static route)" />
   </component>
 </project>
