@@ -19,7 +19,7 @@ const handler = NextAuth({
 
           if (res.data.token) {
             return {
-              id: res.data.email,
+              id: res.data.userId,
               email: res.data.email,
               username: res.data.username,
               token: res.data.token,
@@ -37,6 +37,7 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.accessToken = user.token;
+        token.id = user.id;
         token.email = user.email;
         token.username = user.username;
         token.role = user.role;
@@ -45,6 +46,7 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
+      session.user.id = token.id;
       session.user.email = token.email;
       session.user.username = token.username;
       session.user.role = token.role;

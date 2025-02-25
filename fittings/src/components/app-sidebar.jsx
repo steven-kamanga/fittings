@@ -26,20 +26,12 @@ const data = {
       url: "/getting-started",
     },
     {
-      title: "Schedule a Swing Analysis",
+      title: "Swing Analysis",
       url: "/swing-analysis",
     },
     {
-      title: "Schedule a Fitting",
+      title: "Fitting",
       url: "/schedule-fitting",
-    },
-    {
-      title: "Fitting Progress",
-      url: "/fitting-progress",
-    },
-    {
-      title: "Account History",
-      url: "/account-history",
     },
   ],
 };

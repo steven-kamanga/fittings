@@ -1,20 +1,17 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             String           @id @default(auto()) @map("_id") @db.ObjectId
+  id             String           @id @default(uuid())
   name           String?
   email          String           @unique
   password_hash  String
@@ -34,9 +31,9 @@ enum Role {
 }
 
 model SwingAnalysis {
-  id         String              @id @default(auto()) @map("_id") @db.ObjectId
+  id         String              @id @default(uuid())
   user       User                @relation(fields: [userId], references: [id])
-  userId     String              @db.ObjectId
+  userId     String
   date       DateTime
   status     SwingAnalysisStatus @default(scheduled)
   comments   String?
@@ -51,9 +48,9 @@ enum SwingAnalysisStatus {
 }
 
 model FittingRequest {
-  id                String               @id @default(auto()) @map("_id") @db.ObjectId
+  id                String               @id @default(uuid())
   user              User                 @relation(fields: [userId], references: [id])
-  userId            String               @db.ObjectId
+  userId            String
   date              DateTime
   status            FittingRequestStatus @default(submitted)
   comments          String?
@@ -72,9 +69,9 @@ enum FittingRequestStatus {
 }
 
 model FittingProgress {
-  id               String               @id @default(auto()) @map("_id") @db.ObjectId
+  id               String               @id @default(uuid())
   fittingRequest   FittingRequest       @relation(fields: [fittingRequestId], references: [id])
-  fittingRequestId String               @db.ObjectId
+  fittingRequestId String
   step             FittingRequestStatus
   completed_at     DateTime?
   created_at       DateTime             @default(now())
@@ -82,9 +79,9 @@ model FittingProgress {
 }
 
 model AdminTask {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  id               String         @id @default(uuid())
   fittingRequest   FittingRequest @relation(fields: [fittingRequestId], references: [id])
-  fittingRequestId String         @db.ObjectId
+  fittingRequestId String
   task             AdminTaskType
   completed_at     DateTime?
   created_at       DateTime       @default(now())

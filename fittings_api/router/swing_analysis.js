@@ -59,6 +59,82 @@ swingAnalysisRouter.post("/swing-analysis", async (req, res) => {
 
 /**
  * @swagger
+ * /customer/swing-analysis:
+ *   get:
+ *     summary: Get all swing analyses
+ *     tags: [SwingAnalysis]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [scheduled, completed, canceled]
+ *         description: Filter by status
+ *     responses:
+ *       200:
+ *         description: List of swing analyses retrieved successfully
+ *       500:
+ *         description: Internal server error
+ */
+swingAnalysisRouter.get("/swing-analysis", async (req, res) => {
+  try {
+    const prisma = getPrismaInstance();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status;
+
+    const skip = (page - 1) * limit;
+
+    const where = {};
+    if (status) {
+      where.status = status;
+    }
+
+    const [swingAnalyses, total] = await Promise.all([
+      prisma.swingAnalysis.findMany({
+        where,
+        skip,
+        take: limit,
+        include: { user: true },
+        orderBy: { date: "desc" },
+      }),
+      prisma.swingAnalysis.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      data: swingAnalyses,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * @swagger
  * /customer/swing-analysis/{id}:
  *   get:
  *     summary: Get a specific swing analysis by ID

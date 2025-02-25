@@ -1,7 +1,7 @@
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 
 const HorizontalHeader = () => {
   return (

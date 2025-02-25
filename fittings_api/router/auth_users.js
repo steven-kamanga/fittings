@@ -135,6 +135,7 @@ regd_users.post("/login", async (req, res) => {
       username: user.name,
       token: token,
       role: user.role,
+      userId: user.id,
     });
   } catch (error) {
     console.error(error);

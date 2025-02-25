@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 const Page = () => {
   const router = useRouter();
-  const [swingAnalyses, setSwingAnalyses] = useState([]);
+  const [fittings, setFittings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -25,16 +25,16 @@ const Page = () => {
 
   useEffect(() => {
     if (status === "authenticated" && session?.accessToken) {
-      fetchSwingAnalyses();
+      fetchFittings();
     }
   }, [currentPage, status, session]);
 
-  const fetchSwingAnalyses = async () => {
+  const fetchFittings = async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.API_URL}/swing-analysis`,
+        `${process.env.API_URL}/fitting-requests`,
         {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
@@ -45,11 +45,12 @@ const Page = () => {
           },
         },
       );
-      setSwingAnalyses(response.data.data || []);
-      setTotalPages(response.data.meta.totalPages || 1);
+      setFittings(response.data.fittingRequests);
+      setTotalPages(response.data.pagination.totalPages);
+      setCurrentPage(response.data.pagination.currentPage);
     } catch (err) {
-      setError("Failed to fetch swing analyses. Please try again later.");
-      console.error("Error fetching swing analyses:", err);
+      setError("Failed to fetch fitting requests. Please try again later.");
+      console.error("Error fetching fitting requests:", err);
     } finally {
       setIsLoading(false);
     }
@@ -71,19 +72,19 @@ const Page = () => {
     return <div>You are not signed in.</div>;
   }
 
-  if (isLoading) return <div>Loading swing analysis...</div>;
+  if (isLoading) return <div>Loading fittings...</div>;
   if (error) return <div>{error}</div>;
 
   return (
     <main className={"flex flex-col items-center justify-center"}>
       <section className={"w-[90%]"}>
-        <h1 className={"font-bold text-lg"}>Swing Analysis</h1>
+        <h1 className={"font-bold text-lg"}>Fitting</h1>
         <section className={"space-y-1"}>
           <section className={"flex flex-row justify-between"}>
             <div></div>
             <Button
               onClick={() => {
-                router.push("/swing-analysis/create");
+                router.push("/schedule-fitting/create");
               }}
               className={"m-0 py-0 px-2 pr-3"}
               variant={"default"}
@@ -92,44 +93,40 @@ const Page = () => {
               Schedule
             </Button>
           </section>
-          {swingAnalyses.length === 0 ? (
-            <div className="text-center py-4">
-              No swing analyses found. Click 'Schedule' to create a new one.
-            </div>
-          ) : (
-            <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      #
-                    </th>
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Date
-                    </th>
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Status
-                    </th>
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Comments
-                    </th>
-                    <th className="uppercase w-56 text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {swingAnalyses.map((analysis, idx) => (
-                    <tr key={analysis.id}>
+          <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                    #
+                  </th>
+                  <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                    Date
+                  </th>
+                  <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                    Status
+                  </th>
+                  <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                    Comments
+                  </th>
+                  <th className="uppercase w-56 text-xs border text-gray-500 text-left border-gray-200 p-2">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {fittings.length > 0 ? (
+                  fittings.map((fitting, idx) => (
+                    <tr key={fitting.id}>
                       <td className="border border-gray-200 p-2">{idx + 1}</td>
                       <td className="border border-gray-200 p-2">
-                        {new Date(analysis.date).toLocaleString()}
+                        {new Date(fitting.date).toLocaleString()}
                       </td>
                       <td className="border border-gray-200 p-2">
-                        {analysis.status}
+                        {fitting.status}
                       </td>
                       <td className="border border-gray-200 p-2">
-                        {analysis.comments}
+                        {fitting.comments}
                       </td>
                       <td className="border border-gray-200 p-2">
                         <Button className={"m-0 py-0 px-2"} variant={"ghost"}>
@@ -142,29 +139,38 @@ const Page = () => {
                         </Button>
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="bg-gray-100 py-1 px-1 flex justify-end">
-                <Button
-                  variant={"ghost"}
-                  className={"m-0 py-0 px-2"}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft />
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  className={"m-0 py-0 px-2"}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRight />
-                </Button>
-              </div>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan="5"
+                      className="border border-gray-200 p-2 text-center"
+                    >
+                      No fitting requests found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="bg-gray-100 py-1 px-1 flex justify-end">
+              <Button
+                variant={"ghost"}
+                className={"m-0 py-0 px-2"}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1 || totalPages === 0}
+              >
+                <ChevronLeft />
+              </Button>
+              <Button
+                variant={"ghost"}
+                className={"m-0 py-0 px-2"}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages || totalPages === 0}
+              >
+                <ChevronRight />
+              </Button>
             </div>
-          )}
+          </div>
         </section>
       </section>
     </main>

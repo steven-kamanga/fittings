@@ -119,6 +119,88 @@ fittingRequestRouter.get("/fitting-request/:id", async (req, res) => {
 
 /**
  * @swagger
+ * /customer/fitting-requests:
+ *   get:
+ *     summary: Get all fitting requests
+ *     tags: [FittingRequest]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *         default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Filter by status (e.g., submitted, prepping, scheduled, canceled, completed)
+ *     responses:
+ *       200:
+ *         description: List of fitting requests
+ *       500:
+ *         description: Internal server error
+ */
+fittingRequestRouter.get("/fitting-requests", async (req, res) => {
+  try {
+    const prisma = getPrismaInstance();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status;
+
+    const skip = (page - 1) * limit;
+
+    const where = status ? { status } : {};
+
+    const [fittingRequests, totalCount] = await Promise.all([
+      prisma.fittingRequest.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          fittingProgresses: true,
+        },
+        orderBy: {
+          date: "desc",
+        },
+      }),
+      prisma.fittingRequest.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      fittingRequests,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * @swagger
  * /customer/fitting-request/{id}:
  *   put:
  *     summary: Update a fitting request
