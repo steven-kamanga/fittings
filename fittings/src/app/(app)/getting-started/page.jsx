@@ -10,7 +10,7 @@ const Page = () => {
           </h2>
         </section>
         <section>
-          <p className="text-base text-gray-800 font-medium leading-relaxed text-justify">
+          <p className="text-base leading-relaxed text-justify">
             Welcome to your personalized golf club fitting experience. During
             your session, our expert fitters will analyze your swing dynamics,
             body measurements, and playing style to recommend the perfect club
