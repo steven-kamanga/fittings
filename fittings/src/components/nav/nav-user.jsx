@@ -1,7 +1,11 @@
 "use client";
 
+import React, { useState } from "react";
 import { ChevronsUpDown, LogOut, UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import EditSheet from "@/components/edit-sheet";
+import EditProfileForm from "@/components/nav/edit-profile-form";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,8 +22,11 @@ import {
 } from "@/components/ui/sidebar";
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { useRouter } from "next/navigation";
 
 export function NavUser() {
+  const router = useRouter();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const { isMobile } = useSidebar();
   const { data: session, status } = useSession();
 
@@ -78,7 +85,12 @@ export function NavUser() {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setIsEditProfileOpen(true);
+                }}
+              >
                 <UserIcon className="mr-2 h-4 w-4" />
                 My Profile
               </DropdownMenuItem>
@@ -91,6 +103,26 @@ export function NavUser() {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      {session.user && (
+        <EditSheet
+          isOpen={isEditProfileOpen}
+          onClose={() => setIsEditProfileOpen(false)}
+          title="Edit Profile"
+          subtitle={`Last updated: ${new Date(
+            session.user.updated_at || Date.now()
+          ).toLocaleDateString()}`}
+        >
+          <EditProfileForm
+            user={session.user}
+            onClose={() => setIsEditProfileOpen(false)}
+            onSuccess={() => {
+              // Refresh the session to update the UI
+              router.refresh();
+            }}
+            accessToken={session.accessToken}
+          />
+        </EditSheet>
+      )}
     </SidebarMenu>
   );
 }

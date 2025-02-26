@@ -23,6 +23,7 @@ model User {
   updated_at     DateTime         @updatedAt
   swing_analyses SwingAnalysis[]
   FittingRequest FittingRequest[]
+  GettingStarted GettingStarted[]
 }
 
 enum Role {
@@ -76,6 +77,16 @@ model FittingProgress {
   completed_at     DateTime?
   created_at       DateTime             @default(now())
   updated_at       DateTime             @updatedAt
+}
+
+model GettingStarted {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  message    String
+  isActive   Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model AdminTask {

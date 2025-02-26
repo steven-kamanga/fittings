@@ -3,16 +3,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Pencil,
-  Plus,
-  StopCircle,
-  XCircle,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Pencil, Plus, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import EditSheet from "@/components/edit-sheet";
+import EditSwingAnalysisForm from "@/components/swing-analysis/swing-analysis";
+import DeleteConfirmationModal from "@/components/delete-confirmation";
+import { toast } from "sonner";
 
 const Page = () => {
   const router = useRouter();
@@ -22,6 +19,38 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { data: session, status } = useSession();
+  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
+  const [analysisToEdit, setAnalysisToEdit] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [analysisToDelete, setAnalysisToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!analysisToDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await axios.delete(
+        `${process.env.API_URL}/swing-analysis/${analysisToDelete.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        }
+      );
+
+      toast.success("Swing analysis cancelled successfully");
+      fetchSwingAnalyses();
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to cancel swing analysis"
+      );
+    } finally {
+      setIsDeleting(false);
+      setIsDeleteModalOpen(false);
+      setAnalysisToDelete(null);
+    }
+  };
 
   useEffect(() => {
     if (status === "authenticated" && session?.accessToken) {
@@ -43,7 +72,7 @@ const Page = () => {
             page: currentPage,
             limit: 5,
           },
-        },
+        }
       );
       setSwingAnalyses(response.data.data || []);
       setTotalPages(response.data.meta.totalPages || 1);
@@ -132,11 +161,25 @@ const Page = () => {
                         {analysis.comments}
                       </td>
                       <td className="border border-gray-200 p-2">
-                        <Button className={"m-0 py-0 px-2"} variant={"ghost"}>
+                        <Button
+                          onClick={() => {
+                            setAnalysisToEdit(analysis);
+                            setIsEditSheetOpen(true);
+                          }}
+                          className={"m-0 py-0 px-2"}
+                          variant={"ghost"}
+                        >
                           <Pencil className={"text-red"} size={"20"} />
                           Reschedule
                         </Button>
-                        <Button className={"m-0 py-0 px-2"} variant={"ghost"}>
+                        <Button
+                          className={"m-0 py-0 px-2"}
+                          variant={"ghost"}
+                          onClick={() => {
+                            setAnalysisToDelete(analysis);
+                            setIsDeleteModalOpen(true);
+                          }}
+                        >
                           <XCircle color={"red"} size={"20"} />
                           <p className={"text-red-500"}>Cancel</p>
                         </Button>
@@ -167,6 +210,48 @@ const Page = () => {
           )}
         </section>
       </section>
+      {analysisToEdit && (
+        <EditSheet
+          isOpen={isEditSheetOpen}
+          onClose={() => {
+            setIsEditSheetOpen(false);
+            setAnalysisToEdit(null);
+          }}
+          title="Reschedule Swing Analysis"
+          subtitle={`Originally scheduled for: ${new Date(
+            analysisToEdit.date
+          ).toLocaleString()}`}
+        >
+          <EditSwingAnalysisForm
+            analysis={analysisToEdit}
+            onClose={() => {
+              setIsEditSheetOpen(false);
+              setAnalysisToEdit(null);
+            }}
+            onSuccess={() => {
+              fetchSwingAnalyses();
+            }}
+            accessToken={session.accessToken}
+          />
+        </EditSheet>
+      )}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setAnalysisToDelete(null);
+        }}
+        onConfirm={handleDelete}
+        title="Cancel Swing Analysis"
+        description={
+          analysisToDelete
+            ? `Are you sure you want to cancel your swing analysis scheduled for ${new Date(
+                analysisToDelete.date
+              ).toLocaleString()}? This action cannot be undone.`
+            : ""
+        }
+        isLoading={isDeleting}
+      />
     </main>
   );
 };

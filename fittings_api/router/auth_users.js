@@ -289,6 +289,192 @@ regd_users.get("/me", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /auth/users/me:
+ *   put:
+ *     summary: Update current user's profile
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               golf_club_size:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+regd_users.put("/users/me", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const prisma = getPrismaInstance();
+      const updateData = { ...req.body };
+
+      // Handle password update separately
+      if (updateData.password) {
+        updateData.password_hash = await bcrypt.hash(updateData.password, 10);
+        delete updateData.password;
+      }
+
+      // Remove fields that shouldn't be updated
+      delete updateData.email;
+      delete updateData.role;
+
+      const updatedUser = await prisma.user.update({
+        where: { email: decoded.email },
+        data: updateData,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          golf_club_size: true,
+          role: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+
+      res.status(200).json(updatedUser);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * @swagger
+ * /auth/users/{id}:
+ *   put:
+ *     summary: Update a user's profile (Admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               golf_club_size:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access required
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+regd_users.put("/users/:id", async (req, res) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    jwt.verify(token, SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      // Check if user is admin
+      if (decoded.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const prisma = getPrismaInstance();
+      const updateData = { ...req.body };
+
+      // Handle password update separately
+      if (updateData.password) {
+        updateData.password_hash = await bcrypt.hash(updateData.password, 10);
+        delete updateData.password;
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: { id: req.params.id },
+        data: updateData,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          golf_club_size: true,
+          role: true,
+          created_at: true,
+          updated_at: true,
+        },
+      });
+
+      res.status(200).json(updatedUser);
+    });
+  } catch (error) {
+    console.error(error);
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 module.exports = {
   authenticated: regd_users,
   isValid,

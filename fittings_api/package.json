@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "nodemon --inspect index.js"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,8 @@
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.19",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "prisma": "^6.4.1"

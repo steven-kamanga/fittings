@@ -8,8 +8,10 @@ const swaggerJsdoc = require("swagger-jsdoc");
 const swingAnalysisRouter = require("./router/swing_analysis");
 const fittingRequestRouter = require("./router/fitting_request.js");
 const adminTaskTypeRouter = require("./router/admin_task_type");
+const generalRouter = require("./router/general");
 const routers = express.Router();
 const cors = require("cors");
+const logger = require("./logger");
 
 const app = express();
 
@@ -17,7 +19,7 @@ app.use(
   cors({
     origin: "*",
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
@@ -28,7 +30,7 @@ app.use(
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
-  }),
+  })
 );
 
 const PORT = process.env.PORT || 3030;
@@ -77,15 +79,23 @@ routers.use("/auth", authRoutes);
 routers.use("", authenticateJWT, swingAnalysisRouter);
 routers.use("", authenticateJWT, fittingRequestRouter);
 routers.use("", authenticateJWT, adminTaskTypeRouter);
+routers.use("", authenticateJWT, generalRouter);
 
 app.use("/api/v1", routers);
-
-app.listen(PORT, () =>
-  console.log(`Server running on http://127.0.0.1:${PORT}`),
-);
 
 process.on("SIGINT", async () => {
   const prisma = getPrismaInstance();
   await prisma.$disconnect();
   process.exit();
+});
+
+app.listen(PORT, () => {
+  logger.info(`Server running on http://127.0.0.1:${PORT}`);
+});
+
+// Add global error handler
+app.use((err, req, res, next) => {
+  logger.error("Global error handler");
+  logger.error(err.stack);
+  res.status(500).send("Something broke!");
 });

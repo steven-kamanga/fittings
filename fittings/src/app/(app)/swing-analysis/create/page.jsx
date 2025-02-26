@@ -60,7 +60,7 @@ const Page = () => {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
-        },
+        }
       );
 
       if (response.status === 201) {
