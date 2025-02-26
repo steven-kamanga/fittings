@@ -72,7 +72,7 @@ regd_users.post("/register", async (req, res) => {
         phone,
         address,
         golf_club_size,
-        role: "consumer", // Default role
+        role: "consumer",
       },
     });
     res.status(201).json({ message: "User registered successfully" });
@@ -339,13 +339,11 @@ regd_users.put("/users/me", async (req, res) => {
       const prisma = getPrismaInstance();
       const updateData = { ...req.body };
 
-      // Handle password update separately
       if (updateData.password) {
         updateData.password_hash = await bcrypt.hash(updateData.password, 10);
         delete updateData.password;
       }
 
-      // Remove fields that shouldn't be updated
       delete updateData.email;
       delete updateData.role;
 
@@ -434,7 +432,6 @@ regd_users.put("/users/:id", async (req, res) => {
         return res.status(401).json({ message: "Invalid token" });
       }
 
-      // Check if user is admin
       if (decoded.role !== "admin") {
         return res.status(403).json({ message: "Admin access required" });
       }
@@ -442,7 +439,6 @@ regd_users.put("/users/:id", async (req, res) => {
       const prisma = getPrismaInstance();
       const updateData = { ...req.body };
 
-      // Handle password update separately
       if (updateData.password) {
         updateData.password_hash = await bcrypt.hash(updateData.password, 10);
         delete updateData.password;
