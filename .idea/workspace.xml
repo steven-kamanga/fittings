@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="- Working auth and navigation, also updated ad banner (static route)">
-      <change beforePath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/auth/login/page.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/src/app/login/page.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings/src/components/horizontal-header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/components/horizontal-header.jsx" afterDir="false" />
+    <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="- Working consumer routes, swing and fitting">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/router/auth_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/auth_users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/router/fitting_request.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/fitting_request.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings_api/router/swing_analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/swing_analysis.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,32 +20,50 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JSX File" />
         <option value="JavaScript File" />
+        <option value="JSX File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
+    <excluded-from-favorite>
+      <branch-storage>
+        <map>
+          <entry type="REMOTE">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="origin/master" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </excluded-from-favorite>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "steven-kamanga"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;steven-kamanga&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/steven-kamanga/fittings.git",
-    "accountId": "2ecc7cde-01a4-47f0-9747-1e5812b33eca"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/steven-kamanga/fittings.git&quot;,
+    &quot;accountId&quot;: &quot;2ecc7cde-01a4-47f0-9747-1e5812b33eca&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2tTbvhhPkwGWCSFsrU8wNbuw3zM" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -50,8 +71,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/steve/Documents/fittings",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -66,11 +91,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\steve\Documents\fittings\fittings\videos" />
       <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\(app)" />
       <recent name="C:\Users\steve\Documents\fittings\fittings\src\app" />
       <recent name="C:\Users\steve\Documents\fittings\fittings\src\app\api\(app)" />
       <recent name="C:\Users\steve\Documents\fittings\fittings\public\icons" />
-      <recent name="C:\Users\steve\Documents\fittings\fittings\public" />
     </key>
   </component>
   <component name="RunManager">
@@ -93,7 +118,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-WS-243.24978.60" />
       </set>
     </attachedChunks>
   </component>
@@ -105,7 +130,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1740379245453</updated>
-      <workItem from="1740379248741" duration="23502000" />
+      <workItem from="1740379248741" duration="31270000" />
+      <workItem from="1740494274935" duration="1767000" />
+      <workItem from="1740514083730" duration="14714000" />
     </task>
     <task id="LOCAL-00001" summary="- Working auth and session management with next auth.">
       <option name="closed" value="true" />
@@ -147,7 +174,39 @@
       <option name="project" value="LOCAL" />
       <updated>1740476582610</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="- Removed a duplicate login page, and made the banner mobile responsive">
+      <option name="closed" value="true" />
+      <created>1740477446041</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1740477446041</updated>
+    </task>
+    <task id="LOCAL-00007" summary="- Working home page, getting started and swing analysis route, for the consumer role">
+      <option name="closed" value="true" />
+      <created>1740488545520</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1740488545520</updated>
+    </task>
+    <task id="LOCAL-00008" summary="- Working consumer routes, swing and fitting">
+      <option name="closed" value="true" />
+      <created>1740525665216</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1740525665216</updated>
+    </task>
+    <task id="LOCAL-00009" summary="- Working consumer routes, swing and fitting">
+      <option name="closed" value="true" />
+      <created>1740526353986</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1740526353986</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,7 +217,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -170,6 +235,9 @@
     <MESSAGE value="- Updated API versioning and fixed some routes." />
     <MESSAGE value="- Working login screen" />
     <MESSAGE value="- Working auth and navigation, also updated ad banner (static route)" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Working auth and navigation, also updated ad banner (static route)" />
+    <MESSAGE value="- Removed a duplicate login page, and made the banner mobile responsive" />
+    <MESSAGE value="- Working home page, getting started and swing analysis route, for the consumer role" />
+    <MESSAGE value="- Working consumer routes, swing and fitting" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Working consumer routes, swing and fitting" />
   </component>
 </project>

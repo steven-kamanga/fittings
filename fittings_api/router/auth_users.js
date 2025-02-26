@@ -16,7 +16,7 @@ const isValid = async (email) => {
 
 /**
  * @swagger
- * /customer/register:
+ * /register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -84,7 +84,7 @@ regd_users.post("/register", async (req, res) => {
 
 /**
  * @swagger
- * /customer/auth:
+ * /auth:
  *   post:
  *     summary: Login a user
  *     tags: [Users]
@@ -145,7 +145,7 @@ regd_users.post("/login", async (req, res) => {
 
 /**
  * @swagger
- * /customer/auth/users/{id}:
+ * /auth/users/{id}:
  *   get:
  *     summary: Get a specific user by ID
  *     tags: [Users]
@@ -195,7 +195,7 @@ regd_users.get("/auth/users/:id", async (req, res) => {
 
 /**
  * @swagger
- * /customer/auth/users:
+ * /auth/users:
  *   get:
  *     summary: Get all users
  *     tags: [Users]
@@ -249,7 +249,6 @@ regd_users.get("/auth/users", async (req, res) => {
  */
 regd_users.get("/me", async (req, res) => {
   try {
-    // Get the token from the Authorization header
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];
 
@@ -257,13 +256,11 @@ regd_users.get("/me", async (req, res) => {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    // Verify the token
     jwt.verify(token, SECRET, async (err, decoded) => {
       if (err) {
         return res.status(401).json({ message: "Invalid token" });
       }
 
-      // Token is valid, get the user from the database
       const prisma = getPrismaInstance();
       const user = await prisma.user.findUnique({
         where: { email: decoded.email },

@@ -4,7 +4,7 @@ const swingAnalysisRouter = express.Router();
 
 /**
  * @swagger
- * /customer/swing-analysis:
+ * /api/v1/swing-analysis:
  *   post:
  *     summary: Create a new swing analysis
  *     tags: [SwingAnalysis]
@@ -59,7 +59,7 @@ swingAnalysisRouter.post("/swing-analysis", async (req, res) => {
 
 /**
  * @swagger
- * /customer/swing-analysis:
+ * /api/v1/swing-analysis:
  *   get:
  *     summary: Get all swing analyses
  *     tags: [SwingAnalysis]
@@ -135,7 +135,7 @@ swingAnalysisRouter.get("/swing-analysis", async (req, res) => {
 
 /**
  * @swagger
- * /customer/swing-analysis/{id}:
+ * /api/v1/swing-analysis/{id}:
  *   get:
  *     summary: Get a specific swing analysis by ID
  *     tags: [SwingAnalysis]
@@ -175,7 +175,7 @@ swingAnalysisRouter.get("/swing-analysis/:id", async (req, res) => {
 
 /**
  * @swagger
- * /customer/swing-analysis/{id}:
+ * /api/v1/swing-analysis/{id}:
  *   put:
  *     summary: Update a swing analysis
  *     tags: [SwingAnalysis]
@@ -241,7 +241,7 @@ swingAnalysisRouter.put("/swing-analysis/:id", async (req, res) => {
 
 /**
  * @swagger
- * /customer/swing-analysis/{id}:
+ * /api/v1/swing-analysis/{id}:
  *   delete:
  *     summary: Delete a swing analysis
  *     tags: [SwingAnalysis]

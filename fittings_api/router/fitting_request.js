@@ -4,7 +4,7 @@ const fittingRequestRouter = express.Router();
 
 /**
  * @swagger
- * /customer/fitting-request:
+ * /api/v1/fitting-request:
  *   post:
  *     summary: Create a new fitting request
  *     tags: [FittingRequest]
@@ -67,7 +67,7 @@ fittingRequestRouter.post("/fitting-request", async (req, res) => {
 
 /**
  * @swagger
- * /customer/fitting-request/{id}:
+ * /api/v1/fitting-request/{id}:
  *   get:
  *     summary: Get a specific fitting request by ID
  *     tags: [FittingRequest]
@@ -119,7 +119,7 @@ fittingRequestRouter.get("/fitting-request/:id", async (req, res) => {
 
 /**
  * @swagger
- * /customer/fitting-requests:
+ * /api/v1/fitting-requests:
  *   get:
  *     summary: Get all fitting requests
  *     tags: [FittingRequest]
@@ -201,7 +201,7 @@ fittingRequestRouter.get("/fitting-requests", async (req, res) => {
 
 /**
  * @swagger
- * /customer/fitting-request/{id}:
+ * /api/v1/fitting-request/{id}:
  *   put:
  *     summary: Update a fitting request
  *     tags: [FittingRequest]
@@ -272,7 +272,7 @@ fittingRequestRouter.put("/fitting-request/:id", async (req, res) => {
 
 /**
  * @swagger
- * /customer/fitting-request/{id}:
+ * /api/v1/fitting-request/{id}:
  *   delete:
  *     summary: Delete a fitting request
  *     tags: [FittingRequest]
