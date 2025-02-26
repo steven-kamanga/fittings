@@ -43,15 +43,12 @@ generalRouter.post("/getting-started", async (req, res) => {
   try {
     const prisma = getPrismaInstance();
 
-    // Create new message and update all others in a transaction
     const gettingStarted = await prisma.$transaction(async (tx) => {
-      // Set all existing messages to inactive
       await tx.gettingStarted.updateMany({
         where: { isActive: true },
         data: { isActive: false },
       });
 
-      // Create new message with isActive true
       return await tx.gettingStarted.create({
         data: {
           userId,
@@ -226,10 +223,8 @@ generalRouter.put("/getting-started/:id", async (req, res) => {
   try {
     const prisma = getPrismaInstance();
 
-    // If setting this message to active, handle in transaction
     if (isActive) {
       const updatedGettingStarted = await prisma.$transaction(async (tx) => {
-        // Set all other messages to inactive
         await tx.gettingStarted.updateMany({
           where: {
             AND: [{ id: { not: id } }, { isActive: true }],
@@ -237,7 +232,6 @@ generalRouter.put("/getting-started/:id", async (req, res) => {
           data: { isActive: false },
         });
 
-        // Update the target message
         return await tx.gettingStarted.update({
           where: { id },
           data: { message, isActive },
@@ -247,7 +241,6 @@ generalRouter.put("/getting-started/:id", async (req, res) => {
       return res.status(200).json(updatedGettingStarted);
     }
 
-    // If not setting to active, just update the message
     const updatedGettingStarted = await prisma.gettingStarted.update({
       where: { id },
       data: { message, isActive },
@@ -290,7 +283,6 @@ generalRouter.delete("/getting-started/:id", async (req, res) => {
   try {
     const prisma = getPrismaInstance();
 
-    // First check if the message is active
     const message = await prisma.gettingStarted.findUnique({
       where: { id: req.params.id },
     });
