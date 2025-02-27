@@ -4,15 +4,30 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import {
+  BookA,
+  CalendarCheck,
+  Check,
   ChevronLeft,
   ChevronRight,
+  CircleCheck,
   Pencil,
   Plus,
-  StopCircle,
+  Trash,
   XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import { getStatusStyles } from "@/lib/helper";
+import EditSheet from "@/components/edit-sheet";
+import RescheduleForm from "@/components/RescheduleForm";
 
 const Page = () => {
   const router = useRouter();
@@ -21,7 +36,17 @@ const Page = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
+  const [selectedFittingId, setSelectedFittingId] = useState(null);
+  const [selectFittingDate, setSelectFittingDate] = useState(null);
+
   const { data: session, status } = useSession();
+
+  const handleReschedule = (fittingId, prevAppointment) => {
+    setIsEditSheetOpen(true);
+    setSelectedFittingId(fittingId);
+    setSelectFittingDate(prevAppointment);
+  };
 
   useEffect(() => {
     if (status === "authenticated" && session?.accessToken) {
@@ -33,27 +58,51 @@ const Page = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `${process.env.API_URL}/fitting-requests`,
-        {
-          headers: {
-            Authorization: `Bearer ${session.accessToken}`,
-          },
-          params: {
-            page: currentPage,
-            limit: 5,
-          },
+      const url =
+        session.user.role === "admin"
+          ? "/fitting-requests"
+          : `/fitting-requests/${session.user.id}`;
+      const response = await axios.get(`${process.env.API_URL}${url}`, {
+        headers: {
+          Authorization: `Bearer ${session.accessToken}`,
         },
-      );
+        params: {
+          page: currentPage,
+          limit: 5,
+        },
+      });
       setFittings(response.data.fittingRequests);
       setTotalPages(response.data.pagination.totalPages);
       setCurrentPage(response.data.pagination.currentPage);
     } catch (err) {
       setError("Failed to fetch fitting requests. Please try again later.");
-      console.error("Error fetching fitting requests:", err);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleStatusChange = async (fittingId, newStatus) => {
+    try {
+      const response = await axios.patch(
+        `${process.env.API_URL}/fitting-request/${fittingId}/${newStatus}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${session.accessToken}`,
+          },
+        },
+      );
+
+      if (response.status === 200) {
+        setFittings(
+          fittings.map((fitting) =>
+            fitting.id === fittingId
+              ? { ...fitting, status: newStatus }
+              : fitting,
+          ),
+        );
+      }
+    } catch (error) {}
   };
 
   const handlePageChange = (newPage) => {
@@ -80,19 +129,23 @@ const Page = () => {
       <section className={"w-[90%]"}>
         <h1 className={"font-bold text-lg"}>Fitting</h1>
         <section className={"space-y-1"}>
-          <section className={"flex flex-row justify-between"}>
-            <div></div>
-            <Button
-              onClick={() => {
-                router.push("/schedule-fitting/create");
-              }}
-              className={"m-0 py-0 px-2 pr-3"}
-              variant={"default"}
-            >
-              <Plus />
-              Schedule
-            </Button>
-          </section>
+          {session.user.role === "consumer" ? (
+            <section className={"flex flex-row justify-between"}>
+              <div></div>
+              <Button
+                onClick={() => {
+                  router.push("/schedule-fitting/create");
+                }}
+                className={"m-0 py-0 px-2 pr-3"}
+                variant={"default"}
+              >
+                <Plus />
+                Schedule
+              </Button>
+            </section>
+          ) : (
+            <></>
+          )}
           <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full border-collapse">
               <thead>
@@ -100,6 +153,19 @@ const Page = () => {
                   <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
                     #
                   </th>
+                  {session.user.role === "admin" && (
+                    <>
+                      <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                        Customer Name
+                      </th>
+                      <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                        Email
+                      </th>
+                      <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                        Phone
+                      </th>
+                    </>
+                  )}
                   <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
                     Date
                   </th>
@@ -119,24 +185,102 @@ const Page = () => {
                   fittings.map((fitting, idx) => (
                     <tr key={fitting.id}>
                       <td className="border border-gray-200 p-2">{idx + 1}</td>
+                      {session.user.role === "admin" && (
+                        <>
+                          <td className="border border-gray-200 p-2">
+                            {fitting.user.name}
+                          </td>
+                          <td className="border border-gray-200 p-2">
+                            {fitting.user.email}
+                          </td>
+                          <td className="border border-gray-200 p-2 text-right">
+                            {fitting.user.phone}
+                          </td>
+                        </>
+                      )}
                       <td className="border border-gray-200 p-2">
                         {new Date(fitting.date).toLocaleString()}
                       </td>
-                      <td className="border border-gray-200 p-2">
+
+                      <td
+                        className={`border border-gray-200 p-2 text-center ${getStatusStyles(fitting.status)}`}
+                      >
                         {fitting.status}
                       </td>
                       <td className="border border-gray-200 p-2">
                         {fitting.comments}
                       </td>
-                      <td className="border border-gray-200 p-2">
-                        <Button className={"m-0 py-0 px-2"} variant={"ghost"}>
-                          <Pencil className={"text-red"} size={"20"} />
-                          Reschedule
-                        </Button>
-                        <Button className={"m-0 py-0 px-2"} variant={"ghost"}>
-                          <XCircle color={"red"} size={"20"} />
-                          <p className={"text-red-500"}>Cancel</p>
-                        </Button>
+                      <td className="border flex space-x-1 border-gray-200 p-2">
+                        {session.user.role === "admin" ? (
+                          <Select
+                            onValueChange={(value) =>
+                              handleStatusChange(fitting.id, value)
+                            }
+                            defaultValue={fitting.status}
+                          >
+                            <SelectTrigger className="w-fit">
+                              <SelectValue placeholder="Update status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="submitted">
+                                <div
+                                  className={
+                                    "flex space-x-1 font-medium text-green-600 items-center"
+                                  }
+                                >
+                                  <BookA size={19} />
+                                  <p>Acknowledge Request</p>
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="scheduled">
+                                <div
+                                  className={
+                                    "flex font-medium text-amber-700 space-x-1 items-center"
+                                  }
+                                >
+                                  <CalendarCheck size={18} />
+                                  <p>Schedule Fitting</p>
+                                </div>
+                              </SelectItem>
+                              <SelectItem value="completed">
+                                <div
+                                  className={
+                                    "flex space-x-1 font-medium text-blue-700 items-center"
+                                  }
+                                >
+                                  <CircleCheck size={18} />
+                                  <p>Fitting Completed</p>
+                                </div>
+                              </SelectItem>
+                              <SelectItem
+                                className={"text-red-500 font-medium"}
+                                value="canceled"
+                              >
+                                <div className={"flex space-x-1 items-center"}>
+                                  <Trash size={15} />
+                                  <p>Cancel Fitting</p>
+                                </div>
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <Button
+                            onClick={() =>
+                              handleReschedule(fitting.id, fitting.date)
+                            }
+                            className={"m-0 py-0 px-2"}
+                            variant={"outline"}
+                          >
+                            <Pencil className={"text-red"} size={"20"} />
+                            Reschedule
+                          </Button>
+                        )}
+                        {session.user.role === "consumer" && (
+                          <Button>
+                            <XCircle className={"text-red"} size={"20"} />
+                            Cancel
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -173,6 +317,18 @@ const Page = () => {
           </div>
         </section>
       </section>
+      <EditSheet
+        isOpen={isEditSheetOpen}
+        onClose={() => setIsEditSheetOpen(false)}
+        title="Reschedule Fitting"
+        subtitle="Select a new date and time for the fitting"
+      >
+        <RescheduleForm
+          fittingId={selectedFittingId}
+          prevTime={selectFittingDate}
+          onClose={() => setIsEditSheetOpen(false)}
+        />
+      </EditSheet>
     </main>
   );
 };

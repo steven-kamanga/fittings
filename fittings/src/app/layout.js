@@ -1,5 +1,6 @@
 import "./globals.css";
 import SessionProviders from "@/providers/session.provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "Fitting",
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <SessionProviders>{children}</SessionProviders>
+        <Toaster />
       </body>
     </html>
   );

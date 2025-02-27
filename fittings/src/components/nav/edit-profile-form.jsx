@@ -112,7 +112,6 @@ const EditProfileForm = ({ user, onClose, onSuccess, accessToken }) => {
         <Label htmlFor="golf_club_size">Golf Club Size</Label>
         <Input
           id="golf_club_size"
-          type="number"
           value={formData.golf_club_size}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, golf_club_size: e.target.value }))

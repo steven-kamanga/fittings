@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="88df0170-2e6c-4f65-b88f-fe36430560f9" name="Changes" comment="- Working consumer routes, swing and fitting">
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/router/auth_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/auth_users.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/router/fitting_request.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/fitting_request.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/fittings_api/router/swing_analysis.js" beforeDir="false" afterPath="$PROJECT_DIR$/fittings_api/router/swing_analysis.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/app/auth/register/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/app/auth/register/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/components/login-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/components/login-form.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fittings/src/components/nav/edit-profile-form.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/fittings/src/components/nav/edit-profile-form.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,26 +67,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/steve/Documents/fittings",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "npm.server.executor": "Run",
-    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\steve\\AppData\\Roaming\\npm\\node_modules\\prettier",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
-    "ts.external.directory.path": "C:\\Users\\steve\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;database.data.extractors.current.export.id&quot;: &quot;Where Clause&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/steve/Documents/fittings&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.server.executor&quot;: &quot;Run&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\steve\\AppData\\Roaming\\npm\\node_modules\\prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\steve\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
+    ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\steve\Documents\fittings\fittings\videos" />
@@ -98,7 +103,7 @@
       <recent name="C:\Users\steve\Documents\fittings\fittings\public\icons" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="npm.server">
     <configuration name="server" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/fittings/package.json" />
       <command value="run" />
@@ -109,9 +114,20 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/fittings_api/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="npm.server" />
+        <item itemvalue="npm.start" />
       </list>
     </recent_temporary>
   </component>
@@ -132,7 +148,11 @@
       <updated>1740379245453</updated>
       <workItem from="1740379248741" duration="31270000" />
       <workItem from="1740494274935" duration="1767000" />
-      <workItem from="1740514083730" duration="14714000" />
+      <workItem from="1740514083730" duration="15380000" />
+      <workItem from="1740548963605" duration="4729000" />
+      <workItem from="1740559201413" duration="1583000" />
+      <workItem from="1740565278087" duration="129000" />
+      <workItem from="1740574683776" duration="13000" />
     </task>
     <task id="LOCAL-00001" summary="- Working auth and session management with next auth.">
       <option name="closed" value="true" />
@@ -206,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740526353986</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="- Working consumer routes, swing and fitting">
+      <option name="closed" value="true" />
+      <created>1740548915230</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1740548915230</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,5 +267,16 @@
     <MESSAGE value="- Working home page, getting started and swing analysis route, for the consumer role" />
     <MESSAGE value="- Working consumer routes, swing and fitting" />
     <option name="LAST_COMMIT_MESSAGE" value="- Working consumer routes, swing and fitting" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/fittings_api/router/general.js</url>
+          <line>255</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

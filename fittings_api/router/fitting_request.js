@@ -171,6 +171,8 @@ fittingRequestRouter.get("/fitting-requests", async (req, res) => {
             select: {
               name: true,
               email: true,
+              phone: true,
+              golf_club_size: true,
             },
           },
           fittingProgresses: true,
@@ -186,6 +188,178 @@ fittingRequestRouter.get("/fitting-requests", async (req, res) => {
 
     res.status(200).json({
       fittingRequests,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/fitting-request/{id}/status/{newStatus}:
+ *   patch:
+ *     summary: Update the status of a fitting request
+ *     tags: [FittingRequest]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The fitting request ID
+ *       - in: path
+ *         name: newStatus
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [submitted, prepping, scheduled, canceled, completed]
+ *         description: The new status to set
+ */
+fittingRequestRouter.patch(
+  "/fitting-request/:id/:newStatus",
+  async (req, res) => {
+    const { id, newStatus } = req.params;
+
+    const validStatuses = [
+      "submitted",
+      "prepping",
+      "scheduled",
+      "canceled",
+      "completed",
+    ];
+
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({
+        message: "Invalid status. Must be one of: " + validStatuses.join(", "),
+      });
+    }
+
+    try {
+      const prisma = getPrismaInstance();
+      const updatedFittingRequest = await prisma.fittingRequest.update({
+        where: { id },
+        data: {
+          status: newStatus,
+          fittingProgresses: {
+            create: {
+              step: newStatus,
+              completed_at: new Date(),
+            },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+              golf_club_size: true,
+            },
+          },
+          fittingProgresses: true,
+        },
+      });
+
+      res.status(200).json(updatedFittingRequest);
+    } catch (error) {
+      console.error(error);
+      if (error.code === "P2025") {
+        return res.status(404).json({ message: "Fitting request not found" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+);
+
+/**
+ * @swagger
+ * /api/v1/fitting-requests/{userId}:
+ *   get:
+ *     summary: Get all fitting requests for a specific user
+ *     tags: [FittingRequest]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *       - in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *         default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Filter by status
+ *     responses:
+ *       200:
+ *         description: List of user's fitting requests
+ *       404:
+ *         description: User not found or has no fitting requests
+ *       500:
+ *         description: Internal server error
+ */
+
+fittingRequestRouter.get("/fitting-requests/:userId", async (req, res) => {
+  try {
+    const prisma = getPrismaInstance();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status;
+    const userId = req.params.userId;
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      userId,
+      ...(status && { status }),
+    };
+
+    const [fittingRequests, totalCount] = await Promise.all([
+      prisma.fittingRequest.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          fittingProgresses: true,
+        },
+        orderBy: {
+          date: "desc",
+        },
+      }),
+      prisma.fittingRequest.count({ where }),
+    ]);
+
+    // Remove this condition and always return the results
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      fittingRequests, // This will be an empty array if no fittings found
       pagination: {
         currentPage: page,
         totalPages,
@@ -307,5 +481,105 @@ fittingRequestRouter.delete("/fitting-request/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+/**
+ * @swagger
+ * /api/v1/fitting-request/{id}/reschedule:
+ *   patch:
+ *     summary: Reschedule a fitting request
+ *     tags: [FittingRequest]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The fitting request ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - appointmentTime
+ *             properties:
+ *               appointmentTime:
+ *                 type: string
+ *                 format: date-time
+ *     responses:
+ *       200:
+ *         description: Fitting rescheduled successfully
+ *       400:
+ *         description: Time slot already booked
+ *       404:
+ *         description: Fitting request not found
+ *       500:
+ *         description: Internal server error
+ */
+fittingRequestRouter.patch(
+  "/fitting-request/:id/reschedule",
+  async (req, res) => {
+    const { id } = req.params;
+    const { appointmentTime } = req.body;
+
+    if (!appointmentTime) {
+      return res.status(400).json({ message: "Appointment time is required" });
+    }
+
+    try {
+      const prisma = getPrismaInstance();
+      const newDate = new Date(appointmentTime);
+
+      // Check for existing fittings on the same day
+      const existingFitting = await prisma.fittingRequest.findFirst({
+        where: {
+          id: { not: id },
+          date: {
+            gte: new Date(newDate.setHours(0, 0, 0, 0)),
+            lt: new Date(newDate.setHours(23, 59, 59, 999)),
+          },
+        },
+      });
+
+      if (existingFitting) {
+        return res.status(400).json({
+          message: "There is already a fitting scheduled for this day",
+        });
+      }
+
+      const updatedFitting = await prisma.fittingRequest.update({
+        where: { id },
+        data: {
+          date: appointmentTime,
+          fittingProgresses: {
+            create: {
+              step: "rescheduled",
+              completed_at: new Date(),
+            },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          fittingProgresses: true,
+        },
+      });
+
+      res.status(200).json(updatedFitting);
+    } catch (error) {
+      console.error(error);
+      if (error.code === "P2025") {
+        return res.status(404).json({ message: "Fitting request not found" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+);
 
 module.exports = fittingRequestRouter;
