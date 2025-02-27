@@ -126,8 +126,8 @@ const Page = () => {
 
   return (
     <main className={"flex flex-col items-center justify-center"}>
-      <section className={"w-[90%]"}>
-        <h1 className={"font-bold text-lg"}>Fitting</h1>
+      <section className={"w-[90%] flex-col flex space-y-2"}>
+        <h1 className={"font-bold text-base uppercase"}>Fitting</h1>
         <section className={"space-y-1"}>
           {session.user.role === "consumer" ? (
             <section className={"flex flex-row justify-between"}>
