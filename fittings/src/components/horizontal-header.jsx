@@ -5,6 +5,7 @@ import { ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { NavUser } from "@/components/nav/nav-user";
+import Link from "next/link";
 
 const HorizontalHeader = () => {
   const isOpen = useSelector((state) => state.toggle.sidebarOpen);
@@ -34,13 +35,18 @@ const HorizontalHeader = () => {
             <span className="text-yellow-600 font-bold">Gold Tier</span> Golf
             Clubs.
           </h3>
-          <Button
-            variant="default"
-            className="h-8 w-full sm:w-auto py-0 px-2 text-xs sm:text-sm"
+          <Link
+            target={"_blank"}
+            href={"https://www.amazon.com/s?k=golf+clubs"}
           >
-            <ShoppingCart className="mr-1 h-4 w-4" />
-            Shop now!
-          </Button>
+            <Button
+              variant="default"
+              className="h-8 w-full sm:w-auto py-0 px-2 text-xs sm:text-sm"
+            >
+              <ShoppingCart className="mr-1 h-4 w-4" />
+              Shop now!
+            </Button>
+          </Link>
         </div>
       </section>
       <div>

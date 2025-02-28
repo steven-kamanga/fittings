@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { NavUser } from "@/components/nav/nav-user";
+import Link from "next/link";
 
 const data = {
   navMain: [
@@ -70,14 +71,14 @@ export function AppSidebar({ ...props }) {
                   asChild
                   active={router.pathname === item.url}
                 >
-                  <a
+                  <Link
                     href={item.url}
                     className={`font-medium ${
                       router.pathname === item.url ? "text-primary" : ""
                     }`}
                   >
                     {item.title}
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

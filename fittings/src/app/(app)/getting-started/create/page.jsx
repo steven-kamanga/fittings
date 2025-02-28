@@ -30,15 +30,14 @@ const CreateGettingStartedMessage = () => {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
-        }
+        },
       );
 
-      // Navigate back to the previous page
       router.back();
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Failed to create message. Please try again."
+          "Failed to create message. Please try again.",
       );
       console.error("Error creating message:", err);
     } finally {

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import EditSheet from "@/components/edit-sheet";
 import EditCustomerForm from "@/components/edit-customer-form";
+import Link from "next/link";
 
 const Page = () => {
   const router = useRouter();
@@ -86,17 +87,15 @@ const Page = () => {
           <p>Customer Profiles</p>
         </div>
         <section className={"space-y-1"}>
-          <section className={"flex flex-row justify-between"}>
-            <div></div>
-            <Button
-              onClick={() => router.push("/customer-profiles/create")}
-              className={"m-0 py-0 px-2 pr-3"}
-              variant={"default"}
-            >
-              <Plus />
-              Add Customer
-            </Button>
-          </section>
+          {/*<section className={"flex flex-row justify-between"}>*/}
+          {/*  <div></div>*/}
+          {/*  <Link href={"/customer-profiles/create"}>*/}
+          {/*    <Button className={"m-0 py-0 px-2 pr-3"} variant={"default"}>*/}
+          {/*      <Plus />*/}
+          {/*      Add Customer*/}
+          {/*    </Button>*/}
+          {/*  </Link>*/}
+          {/*</section>*/}
           <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full border-collapse">
               <thead>

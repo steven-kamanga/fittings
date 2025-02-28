@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 const Page = () => {
   const router = useRouter();
@@ -161,16 +162,12 @@ const Page = () => {
           ) : (
             <section className={"flex flex-row justify-between"}>
               <div></div>
-              <Button
-                onClick={() => {
-                  router.push("/swing-analysis/create");
-                }}
-                className={"m-0 py-0 px-2 pr-3"}
-                variant={"default"}
-              >
-                <Plus />
-                Schedule
-              </Button>
+              <Link href={"/swing-analysis/create"}>
+                <Button className={"m-0 py-0 px-2 pr-3"} variant={"default"}>
+                  <Plus />
+                  Schedule
+                </Button>
+              </Link>
             </section>
           )}
 

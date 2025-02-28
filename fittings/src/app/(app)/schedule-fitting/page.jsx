@@ -36,6 +36,7 @@ import { getStatusStyles } from "@/lib/helper";
 import EditSheet from "@/components/edit-sheet";
 import RescheduleForm from "@/components/RescheduleForm";
 import FittingCalendar from "@/components/fitting-activity-calendar";
+import Link from "next/link";
 
 const Page = () => {
   const router = useRouter();
@@ -162,16 +163,12 @@ const Page = () => {
             {session.user.role === "consumer" ? (
               <section className={"flex flex-row justify-between"}>
                 <div></div>
-                <Button
-                  onClick={() => {
-                    router.push("/schedule-fitting/create");
-                  }}
-                  className={"m-0 py-0 px-2 pr-3"}
-                  variant={"default"}
-                >
-                  <Plus />
-                  Schedule
-                </Button>
+                <Link href="/schedule-fitting/create">
+                  <Button className={"m-0 py-0 px-2 pr-3"} variant={"default"}>
+                    <Plus />
+                    Schedule
+                  </Button>
+                </Link>
               </section>
             ) : (
               <></>

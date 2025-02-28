@@ -60,11 +60,10 @@ const Page = () => {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
-        }
+        },
       );
 
       if (response.status === 201) {
-        console.log("Swing Analysis Scheduled:", response.data);
         router.push("/swing-analysis");
       } else {
         console.error("Unexpected response status:", response.status);

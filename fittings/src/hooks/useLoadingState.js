@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
-const MINIMUM_LOADING_TIME = 400;
+const MINIMUM_LOADING_TIME = 300;
 
 export const useLoadingState = () => {
   const pathname = usePathname();
