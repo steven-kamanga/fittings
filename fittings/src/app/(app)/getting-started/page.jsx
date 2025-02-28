@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import GettingStartedMessage from "@/components/getting-started-message";
 import SetGettingStartedMessage from "@/components/set-getting-started-message";
@@ -8,11 +8,7 @@ import SetGettingStartedMessage from "@/components/set-getting-started-message";
 const Page = () => {
   const { data: session, status } = useSession();
   if (status === "loading") {
-    return (
-      <div className={"h-6 w-6"}>
-        <LoadingSpinner color={true} />
-      </div>
-    );
+    return <div></div>;
   }
 
   if (status === "unauthenticated") {

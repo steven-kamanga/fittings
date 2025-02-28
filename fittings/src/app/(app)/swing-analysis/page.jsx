@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import {
   BookA,
   CalendarCheck,
@@ -121,8 +120,6 @@ const Page = () => {
 
       const { swingAnalyses, pagination } = response.data;
 
-      console.log("response:", response);
-
       if (swingAnalyses && pagination) {
         setSwingAnalyses(swingAnalyses);
         setTotalPages(pagination.totalPages);
@@ -144,7 +141,7 @@ const Page = () => {
     setCurrentPage(newPage);
   };
 
-  if (status === "loading") {
+  if (status === "loading" || isLoading) {
     return <></>;
   }
 
@@ -152,12 +149,6 @@ const Page = () => {
     return <div>You are not signed in.</div>;
   }
 
-  if (isLoading)
-    return (
-      <div className={"h-6 w-6"}>
-        <LoadingSpinner color={true} />
-      </div>
-    );
   if (error) return <div>{error}</div>;
 
   return (

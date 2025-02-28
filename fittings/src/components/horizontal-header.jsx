@@ -13,7 +13,7 @@ const HorizontalHeader = () => {
     <main className={"flex w-full justify-between items-center"}>
       <section className={"flex flex-row items-center"}>
         <Separator orientation="vertical" className="mr-2 h-4" />
-        {isOpen && (
+        {!isOpen && (
           <div className={"flex items-center space-x-1"}>
             <Image
               src={"/icons/golf.svg"}
@@ -44,7 +44,7 @@ const HorizontalHeader = () => {
         </div>
       </section>
       <div>
-        {isOpen && (
+        {!isOpen && (
           <div>
             <NavUser />
           </div>

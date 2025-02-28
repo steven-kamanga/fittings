@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, PanelLeft } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -252,10 +252,7 @@ const SidebarTrigger = React.forwardRef(
         data-sidebar="trigger"
         variant="outline"
         size="icon"
-        className={cn(
-          "h-7 w-7 rounded-full hover:cursor-pointer hover:bg-black hover:text-white",
-          className,
-        )}
+        className={cn("h-8 w-8 rounded-full hover:cursor-pointer ", className)}
         onClick={(event) => {
           onClick?.(event);
           originalToggle();

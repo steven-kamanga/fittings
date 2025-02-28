@@ -119,19 +119,14 @@ const Page = () => {
     setCurrentPage(newPage);
   };
 
-  if (status === "loading") {
-    return (
-      <div className={"h-6 w-6"}>
-        <LoadingSpinner color={true} />
-      </div>
-    );
+  if (status === "loading" || isLoading) {
+    return <div className={""}></div>;
   }
 
   if (status === "unauthenticated") {
     return <div>You are not signed in.</div>;
   }
 
-  if (isLoading) return <div>Loading fittings...</div>;
   if (error) return <div>{error}</div>;
 
   return (

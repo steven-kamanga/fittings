@@ -4,7 +4,6 @@ import {
   ModalHeader,
   ModalTitle,
   ModalDescription,
-  ModalTrigger,
 } from "@/components/modal";
 import { Button } from "@/components/ui/button";
 

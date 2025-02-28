@@ -10,16 +10,13 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { createNoopStorage } from "./noop_storage";
 import scrollReducer from "../slices/scroll_slice";
 import toggleReducer from "../slices/nav_toggle_slice";
 
-const isServer = typeof window === "undefined";
-
 const persistConfig = {
   key: "root",
-  storage: isServer ? createNoopStorage() : storage,
-  whitelist: ["scroll", "toggle"],
+  version: 1,
+  storage,
 };
 
 const rootReducer = combineReducers({
@@ -39,10 +36,5 @@ export const store = configureStore({
     }),
   devTools: process.env.NODE_ENV === "development",
 });
-
-export const makeStore = () => store;
-
-export const getState = () => store.getState();
-export const dispatch = store.dispatch;
 
 export const persistor = persistStore(store);
