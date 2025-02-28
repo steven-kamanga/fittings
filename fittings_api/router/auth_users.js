@@ -205,7 +205,7 @@ regd_users.get("/auth/users/:id", async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-regd_users.get("/auth/users", async (req, res) => {
+regd_users.get("/users", async (req, res) => {
   try {
     const prisma = getPrismaInstance();
     const users = await prisma.user.findMany({

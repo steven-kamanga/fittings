@@ -47,7 +47,7 @@ swingAnalysisRouter.post("/swing-analysis", async (req, res) => {
         userId,
         date: new Date(date),
         comments,
-        status: "scheduled",
+        status: "submitted",
       },
     });
     res.status(201).json(swingAnalysis);
@@ -99,37 +99,43 @@ swingAnalysisRouter.get("/swing-analysis", async (req, res) => {
     const status = req.query.status;
 
     const skip = (page - 1) * limit;
+    const where = status ? { status } : {};
 
-    const where = {};
-    if (status) {
-      where.status = status;
-    }
-
-    const [swingAnalyses, total] = await Promise.all([
+    const [swingAnalyses, totalCount] = await Promise.all([
       prisma.swingAnalysis.findMany({
         where,
         skip,
         take: limit,
-        include: { user: true },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+        },
         orderBy: { date: "desc" },
       }),
       prisma.swingAnalysis.count({ where }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
+    const totalPages = Math.ceil(totalCount / limit);
 
     res.status(200).json({
-      data: swingAnalyses,
-      meta: {
-        total,
-        page,
-        limit,
+      swingAnalyses,
+      pagination: {
+        currentPage: page,
         totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
       },
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
 });
 
@@ -238,6 +244,158 @@ swingAnalysisRouter.put("/swing-analysis/:id", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+/**
+ * @swagger
+ * /api/v1/swing-analysis/{userId}:
+ *   get:
+ *     summary: Get all swing analysis for a specific user
+ *     tags: [SwingAnalysis]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *       - in: query
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *         default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *         default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Filter by status
+ *     responses:
+ *       200:
+ *         description: List of user's swing analysis
+ *       404:
+ *         description: User not found or has no swing analysis
+ *       500:
+ *         description: Internal server error
+ */
+swingAnalysisRouter.get("/swing-analysis/user/:userId", async (req, res) => {
+  try {
+    const prisma = getPrismaInstance();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const status = req.query.status;
+    const userId = req.params.userId;
+
+    const skip = (page - 1) * limit;
+    const where = {
+      userId,
+      ...(status && { status }),
+    };
+
+    const [swingAnalyses, totalCount] = await Promise.all([
+      prisma.swingAnalysis.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: { date: "desc" },
+      }),
+      prisma.swingAnalysis.count({ where }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    res.status(200).json({
+      swingAnalyses,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/swing-analysis/{id}/status/{newStatus}:
+ *   patch:
+ *     summary: Update the status of a swing analysis
+ *     tags: [SwingAnalysis]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The swing analysis ID
+ *       - in: path
+ *         name: newStatus
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [submitted, scheduled, completed, canceled]
+ *         description: The new status to set
+ */
+swingAnalysisRouter.patch(
+  "/swing-analysis/:id/:newStatus",
+  async (req, res) => {
+    const { id, newStatus } = req.params;
+    const validStatuses = ["submitted", "scheduled", "completed", "canceled"];
+
+    if (!validStatuses.includes(newStatus)) {
+      return res.status(400).json({
+        message: "Invalid status. Must be one of: " + validStatuses.join(", "),
+      });
+    }
+    try {
+      const prisma = getPrismaInstance();
+      const updateSwingAnalysisStatus = await prisma.swingAnalysis.update({
+        where: { id },
+        data: {
+          status: newStatus,
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+              golf_club_size: true,
+            },
+          },
+        },
+      });
+      res.status(200).json(updateSwingAnalysisStatus);
+    } catch (error) {
+      console.error(error);
+      if (error.code === "P2025") {
+        return res.status(404).json({ message: "Fitting request not found" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  },
+);
 
 /**
  * @swagger

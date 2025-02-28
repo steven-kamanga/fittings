@@ -3,10 +3,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Calendar } from "lucide-react";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import {
   BookA,
   CalendarCheck,
-  Check,
   ChevronLeft,
   ChevronRight,
   CircleCheck,
@@ -24,10 +32,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import { getStatusStyles } from "@/lib/helper";
 import EditSheet from "@/components/edit-sheet";
 import RescheduleForm from "@/components/RescheduleForm";
+import FittingCalendar from "@/components/fitting-activity-calendar";
 
 const Page = () => {
   const router = useRouter();
@@ -102,7 +110,9 @@ const Page = () => {
           ),
         );
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
   const handlePageChange = (newPage) => {
@@ -127,8 +137,32 @@ const Page = () => {
   return (
     <main className={"flex flex-col items-center justify-center"}>
       <section className={"w-[90%] flex-col flex space-y-2"}>
-        <h1 className={"font-bold text-base uppercase"}>Fitting</h1>
+        <div className={"font-bold text-base uppercase flex space-x-1"}>
+          <p>{session.user.role === "consumer" && "Schedule"}</p>
+          <p>Fitting</p>
+        </div>
         <section className={"space-y-1"}>
+          <div className="w-full flex justify-end">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Calendar size={16} />
+                  View Calendar
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="w-full">
+                <SheetHeader>
+                  <SheetTitle>Fitting Calendar</SheetTitle>
+                  <SheetDescription>
+                    Calendar view of all scheduled fittings
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-4">
+                  <FittingCalendar fittings={fittings} />
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
           {session.user.role === "consumer" ? (
             <section className={"flex flex-row justify-between"}>
               <div></div>
@@ -146,11 +180,12 @@ const Page = () => {
           ) : (
             <></>
           )}
+
           <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                  <th className="uppercase font-medium text-xs border text-gray-500 text-left border-gray-200 p-2">
                     #
                   </th>
                   {session.user.role === "admin" && (
@@ -201,7 +236,6 @@ const Page = () => {
                       <td className="border border-gray-200 p-2">
                         {new Date(fitting.date).toLocaleString()}
                       </td>
-
                       <td
                         className={`border border-gray-200 p-2 text-center ${getStatusStyles(fitting.status)}`}
                       >
@@ -210,7 +244,7 @@ const Page = () => {
                       <td className="border border-gray-200 p-2">
                         {fitting.comments}
                       </td>
-                      <td className="border flex space-x-1 border-gray-200 p-2">
+                      <td className="border-t flex space-x-1 border-gray-200 p-2">
                         {session.user.role === "admin" ? (
                           <Select
                             onValueChange={(value) =>
@@ -268,6 +302,7 @@ const Page = () => {
                             onClick={() =>
                               handleReschedule(fitting.id, fitting.date)
                             }
+                            disabled={fitting.status === "canceled"}
                             className={"m-0 py-0 px-2"}
                             variant={"outline"}
                           >
@@ -276,9 +311,17 @@ const Page = () => {
                           </Button>
                         )}
                         {session.user.role === "consumer" && (
-                          <Button>
-                            <XCircle className={"text-red"} size={"20"} />
-                            Cancel
+                          <Button
+                            className={"m-0 bg-red-500 py-0 px-2 pr-3"}
+                            variant={"default"}
+                            disabled={fitting.status === "canceled"}
+                          >
+                            <XCircle
+                              color={"white"}
+                              className={"px-0 mx-0"}
+                              size={"20"}
+                            />
+                            <p className={"text-white"}>Cancel</p>
                           </Button>
                         )}
                       </td>

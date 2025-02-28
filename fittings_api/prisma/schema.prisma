@@ -43,6 +43,7 @@ model SwingAnalysis {
 }
 
 enum SwingAnalysisStatus {
+  submitted
   scheduled
   completed
   canceled

@@ -1,6 +1,7 @@
 import "./globals.css";
 import SessionProviders from "@/providers/session.provider";
 import { Toaster } from "@/components/ui/sonner";
+import StoreProvider from "@/lib/Redux/StoreProvider";
 
 export const metadata = {
   title: "Fitting",
@@ -11,8 +12,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SessionProviders>{children}</SessionProviders>
-        <Toaster />
+        <StoreProvider>
+          <SessionProviders>{children}</SessionProviders>
+          <Toaster />
+        </StoreProvider>
       </body>
     </html>
   );

@@ -355,11 +355,10 @@ fittingRequestRouter.get("/fitting-requests/:userId", async (req, res) => {
       prisma.fittingRequest.count({ where }),
     ]);
 
-    // Remove this condition and always return the results
     const totalPages = Math.ceil(totalCount / limit);
 
     res.status(200).json({
-      fittingRequests, // This will be an empty array if no fittings found
+      fittingRequests,
       pagination: {
         currentPage: page,
         totalPages,

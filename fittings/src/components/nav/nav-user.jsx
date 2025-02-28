@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ChevronsUpDown, LogOut, UserIcon } from "lucide-react";
+import { ChevronsUpDown, LogOut, UserIcon, Users } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import EditSheet from "@/components/edit-sheet";
 import EditProfileForm from "@/components/nav/edit-profile-form";
@@ -23,11 +23,22 @@ import {
 import { useSession, signOut } from "next-auth/react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { useRouter } from "next/navigation";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalFooter,
+} from "@/components/modal";
+import { Button } from "@/components/ui/button";
 
 export function NavUser() {
   const router = useRouter();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const { isMobile } = useSidebar();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
@@ -94,9 +105,20 @@ export function NavUser() {
                 <UserIcon className="mr-2 h-4 w-4" />
                 My Profile
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/customer-profiles")}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Customer Profiles
+              </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault();
+                setShowLogoutConfirm(true);
+              }}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               Log out
             </DropdownMenuItem>
@@ -109,20 +131,40 @@ export function NavUser() {
           onClose={() => setIsEditProfileOpen(false)}
           title="Edit Profile"
           subtitle={`Last updated: ${new Date(
-            session.user.updated_at || Date.now()
+            session.user.updated_at || Date.now(),
           ).toLocaleDateString()}`}
         >
           <EditProfileForm
             user={session.user}
             onClose={() => setIsEditProfileOpen(false)}
             onSuccess={() => {
-              // Refresh the session to update the UI
               router.refresh();
             }}
             accessToken={session.accessToken}
           />
         </EditSheet>
       )}
+      <Modal open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <ModalContent>
+          <ModalHeader>
+            <ModalTitle>Confirm Logout</ModalTitle>
+            <ModalDescription>
+              Are you sure you want to log out of your account?
+            </ModalDescription>
+          </ModalHeader>
+          <ModalFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowLogoutConfirm(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleLogout}>
+              Log out
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </SidebarMenu>
   );
 }

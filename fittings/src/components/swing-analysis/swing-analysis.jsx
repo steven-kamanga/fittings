@@ -23,7 +23,6 @@ const EditSwingAnalysisForm = ({
   const { handleEdit, isLoading, error } = useEdit({
     endpoint: "/swing-analysis",
     onSuccess: () => {
-      toast.success("Swing analysis updated successfully");
       onSuccess?.();
       onClose();
     },
