@@ -63,11 +63,7 @@ const EditProfileForm = ({ user, onClose, onSuccess, accessToken }) => {
   };
 
   if (isFetching) {
-    return (
-      <div className="flex h-32 items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
+    return <div className="flex h-32 items-center justify-center"></div>;
   }
 
   return (
