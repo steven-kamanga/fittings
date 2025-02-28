@@ -254,7 +254,6 @@ const Page = () => {
                         {session.user.role === "consumer" && (
                           <div className={"flex space-x-1"}>
                             <Button
-                              disabled={analysis.status === "canceled"}
                               onClick={() => {
                                 setAnalysisToEdit(analysis);
                                 setIsEditSheetOpen(true);

@@ -142,44 +142,46 @@ const Page = () => {
           <p>Fitting</p>
         </div>
         <section className={"space-y-1"}>
-          <div className="w-full flex justify-end">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Calendar size={16} />
-                  View Calendar
+          <div className={"flex flex-row space-x-2"}>
+            <div className="w-full flex justify-end">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Calendar size={16} />
+                    View Calendar
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="w-full">
+                  <SheetHeader>
+                    <SheetTitle>Fitting Calendar</SheetTitle>
+                    <SheetDescription>
+                      Calendar view of all scheduled fittings
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="mt-4">
+                    <FittingCalendar fittings={fittings} />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+            {session.user.role === "consumer" ? (
+              <section className={"flex flex-row justify-between"}>
+                <div></div>
+                <Button
+                  onClick={() => {
+                    router.push("/schedule-fitting/create");
+                  }}
+                  className={"m-0 py-0 px-2 pr-3"}
+                  variant={"default"}
+                >
+                  <Plus />
+                  Schedule
                 </Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="w-full">
-                <SheetHeader>
-                  <SheetTitle>Fitting Calendar</SheetTitle>
-                  <SheetDescription>
-                    Calendar view of all scheduled fittings
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="mt-4">
-                  <FittingCalendar fittings={fittings} />
-                </div>
-              </SheetContent>
-            </Sheet>
+              </section>
+            ) : (
+              <></>
+            )}
           </div>
-          {session.user.role === "consumer" ? (
-            <section className={"flex flex-row justify-between"}>
-              <div></div>
-              <Button
-                onClick={() => {
-                  router.push("/schedule-fitting/create");
-                }}
-                className={"m-0 py-0 px-2 pr-3"}
-                variant={"default"}
-              >
-                <Plus />
-                Schedule
-              </Button>
-            </section>
-          ) : (
-            <></>
-          )}
 
           <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full border-collapse">
@@ -302,7 +304,6 @@ const Page = () => {
                             onClick={() =>
                               handleReschedule(fitting.id, fitting.date)
                             }
-                            disabled={fitting.status === "canceled"}
                             className={"m-0 py-0 px-2"}
                             variant={"outline"}
                           >
