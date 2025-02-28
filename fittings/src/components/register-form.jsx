@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import axios from "axios";
+import Link from "next/link";
 
 export function RegisterForm({ className, ...props }) {
   const router = useRouter();
@@ -54,7 +55,7 @@ export function RegisterForm({ className, ...props }) {
       console.error("Registration error:", error);
       setError(
         error.response?.data?.message ||
-          "Registration failed. Please try again."
+          "Registration failed. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -140,12 +141,12 @@ export function RegisterForm({ className, ...props }) {
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?{" "}
-              <a
-                href="/login"
+              <Link
+                href="/auth/login"
                 className="underline underline-offset-4 hover:text-primary"
               >
                 Sign in
-              </a>
+              </Link>
             </div>
           </form>
         </CardContent>
