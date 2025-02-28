@@ -1,13 +1,31 @@
 import React from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
+import { useSelector } from "react-redux";
+import Image from "next/image";
+import { NavUser } from "@/components/nav/nav-user";
 
 const HorizontalHeader = () => {
+  const isOpen = useSelector((state) => state.toggle.sidebarOpen);
+
   return (
     <main className={"flex w-full justify-between items-center"}>
       <section className={"flex flex-row items-center"}>
         <Separator orientation="vertical" className="mr-2 h-4" />
+        {isOpen && (
+          <div className={"flex items-center space-x-1"}>
+            <Image
+              src={"/icons/golf.svg"}
+              height={"30"}
+              width={"30"}
+              alt={"Golf Icon"}
+            />
+            <p className={"text-lg font-semibold"}>
+              Fitting<span className={"font-thin"}>.gg</span>
+            </p>
+          </div>
+        )}
       </section>
       <section className="flex-1 mx-4">
         <div className="flex flex-col sm:flex-row items-center justify-center text-green-800 text-xs sm:text-sm font-medium px-2 sm:px-4 py-2 my-2 rounded text-center">
@@ -25,6 +43,13 @@ const HorizontalHeader = () => {
           </Button>
         </div>
       </section>
+      <div>
+        {isOpen && (
+          <div>
+            <NavUser />
+          </div>
+        )}
+      </div>
     </main>
   );
 };

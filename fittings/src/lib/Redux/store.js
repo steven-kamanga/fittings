@@ -12,16 +12,19 @@ import {
 import storage from "redux-persist/lib/storage";
 import { createNoopStorage } from "./noop_storage";
 import scrollReducer from "../slices/scroll_slice";
+import toggleReducer from "../slices/nav_toggle_slice";
 
 const isServer = typeof window === "undefined";
 
 const persistConfig = {
   key: "root",
   storage: isServer ? createNoopStorage() : storage,
+  whitelist: ["scroll", "toggle"],
 };
 
 const rootReducer = combineReducers({
   scroll: scrollReducer,
+  toggle: toggleReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

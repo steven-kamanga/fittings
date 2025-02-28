@@ -32,12 +32,14 @@ import {
   ModalFooter,
 } from "@/components/modal";
 import { Button } from "@/components/ui/button";
+import { useSelector } from "react-redux";
 
 export function NavUser() {
   const router = useRouter();
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const { isMobile } = useSidebar();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const isOpen = useSelector((state) => state.toggle.sidebarOpen);
 
   const { data: session, status } = useSession();
 
@@ -91,7 +93,7 @@ export function NavUser() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile || isOpen ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -105,12 +107,14 @@ export function NavUser() {
                 <UserIcon className="mr-2 h-4 w-4" />
                 My Profile
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => router.push("/customer-profiles")}
-              >
-                <Users className="mr-2 h-4 w-4" />
-                Customer Profiles
-              </DropdownMenuItem>
+              {session?.user.role === "admin" && (
+                <DropdownMenuItem
+                  onClick={() => router.push("/customer-profiles")}
+                >
+                  <Users className="mr-2 h-4 w-4" />
+                  Customer Profiles
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
