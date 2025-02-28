@@ -33,6 +33,7 @@ import {
 } from "@/components/modal";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 export function NavUser() {
   const router = useRouter();
@@ -54,11 +55,7 @@ export function NavUser() {
   };
 
   if (status === "loading") {
-    return (
-      <div className={"h-6 w-6"}>
-        <LoadingSpinner color={true} />
-      </div>
-    );
+    return <div className={"h-6 w-6"}></div>;
   }
 
   if (status === "unauthenticated") {
@@ -108,12 +105,12 @@ export function NavUser() {
                 My Profile
               </DropdownMenuItem>
               {session?.user.role === "admin" && (
-                <DropdownMenuItem
-                  onClick={() => router.push("/customer-profiles")}
-                >
-                  <Users className="mr-2 h-4 w-4" />
-                  Customer Profiles
-                </DropdownMenuItem>
+                <Link href={"/customer-profiles"}>
+                  <DropdownMenuItem>
+                    <Users className="mr-2 h-4 w-4" />
+                    Customer Profiles
+                  </DropdownMenuItem>
+                </Link>
               )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
