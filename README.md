@@ -86,8 +86,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 ---
 
-### Contributors Wanted 🚀
-We are looking for contributors to help improve this project! If you are interested, please submit a PR or open an issue.
-
-Happy coding! 🏌️‍♂️
-
