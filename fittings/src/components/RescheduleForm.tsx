@@ -22,7 +22,12 @@ interface RescheduleFormProps {
   onSuccess?: () => void;
 }
 
-const RescheduleForm: React.FC<RescheduleFormProps> = ({ fittingId, prevTime, onClose, onSuccess }) => {
+const RescheduleForm: React.FC<RescheduleFormProps> = ({
+  fittingId,
+  prevTime,
+  onClose,
+  onSuccess,
+}) => {
   console.log("RescheduleForm: ", fittingId, prevTime, onClose, onSuccess);
   const { data: session } = useSession();
   const form = useForm({
@@ -33,6 +38,7 @@ const RescheduleForm: React.FC<RescheduleFormProps> = ({ fittingId, prevTime, on
 
   const onSubmit = async (data: any) => {
     try {
+      console.log("Jere");
       const response = await axios.patch(
         `${process.env.NEXT_PUBLIC_API_URL}/fitting-request/${fittingId}/reschedule`,
         { appointmentTime: data.appointmentTime },
@@ -54,6 +60,7 @@ const RescheduleForm: React.FC<RescheduleFormProps> = ({ fittingId, prevTime, on
       toast.error(
         error.response?.data?.message || "Error rescheduling appointment"
       );
+      console.log("error: ", error.response?.data?.message);
     }
   };
 
@@ -70,7 +77,10 @@ const RescheduleForm: React.FC<RescheduleFormProps> = ({ fittingId, prevTime, on
                   Appointment Time <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <DateTimePickerForm control={form.control} name="appointmentTime" />
+                  <DateTimePickerForm
+                    control={form.control}
+                    name="appointmentTime"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

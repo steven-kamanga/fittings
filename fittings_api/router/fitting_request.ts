@@ -160,6 +160,78 @@ fittingRequestRouter.get(
 );
 
 fittingRequestRouter.patch(
+  "/fitting-request/:id/reschedule",
+  async (
+    req: Request<{ id: string }, {}, RescheduleFittingRequestBody>,
+    res: Response
+  ) => {
+    const { id } = req.params;
+    const { appointmentTime } = req.body;
+
+    if (!appointmentTime) {
+      return res.status(400).json({ message: "Appointment time is required" });
+    }
+
+    try {
+      const prisma = getPrismaInstance();
+      const newDate = new Date(appointmentTime);
+
+      const existingFitting = await prisma.fittingRequest.findFirst({
+        where: {
+          id: { not: id },
+          date: {
+            gte: new Date(newDate.setHours(0, 0, 0, 0)),
+            lt: new Date(newDate.setHours(23, 59, 59, 999)),
+          },
+          status: {
+            not: "canceled", // Don't count canceled fittings
+          },
+        },
+      });
+
+      if (existingFitting) {
+        return res.status(400).json({
+          message: "There is already a fitting scheduled for this day",
+        });
+      }
+
+      // When user reschedules, always set status back to "submitted" for admin review
+      const updatedFitting = await prisma.fittingRequest.update({
+        where: { id },
+        data: {
+          date: new Date(appointmentTime),
+          status: "submitted",
+          fittingProgresses: {
+            create: {
+              step: "submitted",
+              completed_at: new Date(),
+            },
+          },
+        },
+        include: {
+          user: {
+            select: {
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          fittingProgresses: true,
+        },
+      });
+
+      res.status(200).json(updatedFitting);
+    } catch (error) {
+      console.error(error);
+      if ((error as PrismaError).code === "P2025") {
+        return res.status(404).json({ message: "Fitting request not found" });
+      }
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+);
+
+fittingRequestRouter.patch(
   "/fitting-request/:id/:newStatus",
   async (req: Request<{ id: string; newStatus: string }>, res: Response) => {
     const { id, newStatus } = req.params;
@@ -325,74 +397,6 @@ fittingRequestRouter.delete(
       });
 
       res.status(200).json({ message: "Fitting request deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      if ((error as PrismaError).code === "P2025") {
-        return res.status(404).json({ message: "Fitting request not found" });
-      }
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
-);
-
-fittingRequestRouter.patch(
-  "/fitting-request/:id/reschedule",
-  async (
-    req: Request<{ id: string }, {}, RescheduleFittingRequestBody>,
-    res: Response
-  ) => {
-    const { id } = req.params;
-    const { appointmentTime } = req.body;
-
-    if (!appointmentTime) {
-      return res.status(400).json({ message: "Appointment time is required" });
-    }
-
-    try {
-      const prisma = getPrismaInstance();
-      const newDate = new Date(appointmentTime);
-
-      // Check for existing fittings on the same day
-      const existingFitting = await prisma.fittingRequest.findFirst({
-        where: {
-          id: { not: id },
-          date: {
-            gte: new Date(newDate.setHours(0, 0, 0, 0)),
-            lt: new Date(newDate.setHours(23, 59, 59, 999)),
-          },
-        },
-      });
-
-      if (existingFitting) {
-        return res.status(400).json({
-          message: "There is already a fitting scheduled for this day",
-        });
-      }
-
-      const updatedFitting = await prisma.fittingRequest.update({
-        where: { id },
-        data: {
-          date: appointmentTime,
-          fittingProgresses: {
-            create: {
-              step: "scheduled",
-              completed_at: new Date(),
-            },
-          },
-        },
-        include: {
-          user: {
-            select: {
-              name: true,
-              email: true,
-              phone: true,
-            },
-          },
-          fittingProgresses: true,
-        },
-      });
-
-      res.status(200).json(updatedFitting);
     } catch (error) {
       console.error(error);
       if ((error as PrismaError).code === "P2025") {

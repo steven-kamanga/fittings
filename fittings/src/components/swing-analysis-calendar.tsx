@@ -30,7 +30,7 @@ interface User {
   phone: string;
 }
 
-interface Fitting {
+interface SwingAnalysis {
   id: string;
   date: string;
   status: "submitted" | "scheduled" | "completed" | "canceled";
@@ -38,36 +38,38 @@ interface Fitting {
   user: User;
 }
 
-interface FittingCalendarProps {
-  fittings: Fitting[];
+interface SwingAnalysisCalendarProps {
+  swingAnalyses: SwingAnalysis[];
 }
 
-const statusColors: Record<Fitting["status"], string> = {
+const statusColors: Record<SwingAnalysis["status"], string> = {
   submitted: "bg-green-200",
   scheduled: "bg-yellow-200",
   completed: "bg-blue-200",
   canceled: "bg-red-200",
 };
 
-const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
-  const fittingsByMonthAndDay = useMemo(() => {
-    const fittingMap: Record<string, Record<number, Fitting[]>> = {};
+const SwingAnalysisCalendar: React.FC<SwingAnalysisCalendarProps> = ({
+  swingAnalyses,
+}) => {
+  const analysesByMonthAndDay = useMemo(() => {
+    const analysisMap: Record<string, Record<number, SwingAnalysis[]>> = {};
 
-    fittings.forEach((fitting) => {
-      if (fitting.date) {
-        const fittingDate = new Date(fitting.date);
-        const month = months[fittingDate.getMonth()];
-        const day = fittingDate.getDate();
+    swingAnalyses.forEach((analysis) => {
+      if (analysis.date) {
+        const analysisDate = new Date(analysis.date);
+        const month = months[analysisDate.getMonth()];
+        const day = analysisDate.getDate();
 
-        if (!fittingMap[month]) fittingMap[month] = {};
-        if (!fittingMap[month][day]) fittingMap[month][day] = [];
+        if (!analysisMap[month]) analysisMap[month] = {};
+        if (!analysisMap[month][day]) analysisMap[month][day] = [];
 
-        fittingMap[month][day].push(fitting);
+        analysisMap[month][day].push(analysis);
       }
     });
 
-    return fittingMap;
-  }, [fittings]);
+    return analysisMap;
+  }, [swingAnalyses]);
 
   return (
     <div className="flex h-full border bg-highlight rounded border-outline max-w-[calc(100vw-300px)]">
@@ -102,36 +104,36 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                 {[...Array(31)].map((_, day) => (
                   <tr key={day} className="flex">
                     {months.map((month) => {
-                      const fittingsForDay =
-                        fittingsByMonthAndDay[month]?.[day + 1] || [];
-                      const fittingCount = fittingsForDay.length;
+                      const analysesForDay =
+                        analysesByMonthAndDay[month]?.[day + 1] || [];
+                      const analysisCount = analysesForDay.length;
 
                       return (
                         <td
                           key={`${month}-${day}`}
                           className="border-b text-sm border-r border-solid border-outline h-16 w-72 text-gray-700 flex items-center justify-center"
                         >
-                          {fittingCount > 0 && (
+                          {analysisCount > 0 && (
                             <Dialog>
                               <DialogTrigger asChild>
                                 <div
                                   className={`m-1 w-[270px] h-14 ${
-                                    fittingCount === 1
-                                      ? statusColors[fittingsForDay[0].status]
+                                    analysisCount === 1
+                                      ? statusColors[analysesForDay[0].status]
                                       : "bg-blue-500"
                                   } rounded text-xs ${
-                                    fittingCount === 1
+                                    analysisCount === 1
                                       ? "text-gray-700"
                                       : "text-primary-foreground"
                                   } flex flex-col items-center justify-center cursor-pointer`}
                                 >
                                   <div className="font-bold">
-                                    {fittingCount} Fitting
-                                    {fittingCount > 1 ? "s" : ""}
+                                    {analysisCount} Swing Analysis
+                                    {analysisCount > 1 ? " Sessions" : ""}
                                   </div>
                                   <div className="text-[10px] mt-1">
-                                    {fittingsForDay
-                                      .map((fitting) => fitting.user.name)
+                                    {analysesForDay
+                                      .map((analysis) => analysis.user.name)
                                       .join(", ")}
                                   </div>
                                 </div>
@@ -139,36 +141,36 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                               <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden flex flex-col">
                                 <DialogHeader className="border-b pb-4">
                                   <DialogTitle className="text-xl font-semibold">
-                                    Fittings for {month} {day + 1}
+                                    Swing Analysis for {month} {day + 1}
                                   </DialogTitle>
                                   <p className="text-sm text-muted-foreground mt-1">
-                                    {fittingCount} fitting
-                                    {fittingCount > 1 ? "s" : ""} scheduled for
+                                    {analysisCount} session
+                                    {analysisCount > 1 ? "s" : ""} scheduled for
                                     this day
                                   </p>
                                 </DialogHeader>
                                 <div className="flex-1 overflow-y-auto py-4 space-y-3">
-                                  {fittingsForDay.map((fitting, index) => (
+                                  {analysesForDay.map((analysis, index) => (
                                     <div
-                                      key={fitting.id}
+                                      key={analysis.id}
                                       className="border rounded-lg p-4 hover:bg-accent/50 transition-colors"
                                     >
                                       <div className="flex items-center justify-between mb-3">
                                         <h3 className="font-semibold text-lg">
-                                          {fitting.user.name}
+                                          {analysis.user.name}
                                         </h3>
                                         <span
                                           className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                            fitting.status === "submitted"
+                                            analysis.status === "submitted"
                                               ? "bg-green-100 text-green-700"
-                                              : fitting.status === "scheduled"
+                                              : analysis.status === "scheduled"
                                               ? "bg-yellow-100 text-yellow-700"
-                                              : fitting.status === "completed"
+                                              : analysis.status === "completed"
                                               ? "bg-blue-100 text-blue-700"
                                               : "bg-red-100 text-red-700"
                                           }`}
                                         >
-                                          {fitting.status.toUpperCase()}
+                                          {analysis.status.toUpperCase()}
                                         </span>
                                       </div>
                                       <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
@@ -177,7 +179,7 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                                             Email
                                           </span>
                                           <span className="font-medium">
-                                            {fitting.user.email}
+                                            {analysis.user.email}
                                           </span>
                                         </div>
                                         <div className="flex flex-col">
@@ -185,7 +187,7 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                                             Phone
                                           </span>
                                           <span className="font-medium">
-                                            {fitting.user.phone}
+                                            {analysis.user.phone}
                                           </span>
                                         </div>
                                         <div className="flex flex-col">
@@ -194,7 +196,7 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                                           </span>
                                           <span className="font-medium">
                                             {new Date(
-                                              fitting.date
+                                              analysis.date
                                             ).toLocaleString()}
                                           </span>
                                         </div>
@@ -203,7 +205,7 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
                                             Comments
                                           </span>
                                           <span className="font-medium">
-                                            {fitting.comments || "No comments"}
+                                            {analysis.comments || "No comments"}
                                           </span>
                                         </div>
                                       </div>
@@ -227,4 +229,4 @@ const FittingCalendar: React.FC<FittingCalendarProps> = ({ fittings }) => {
   );
 };
 
-export default FittingCalendar;
+export default SwingAnalysisCalendar;

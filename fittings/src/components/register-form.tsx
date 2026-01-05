@@ -16,6 +16,13 @@ import { Label } from "@/components/ui/label";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import axios from "axios";
 import Link from "next/link";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
@@ -25,6 +32,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [golfClubSize, setGolfClubSize] = useState("");
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -38,7 +46,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
       password: formData.get("password"),
       phone: formData.get("phone"),
       address: formData.get("address"),
-      golf_club_size: formData.get("golf_club_size"),
+      golf_club_size: golfClubSize,
     };
 
     try {
@@ -134,12 +142,27 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 
               <div className="grid gap-2">
                 <Label htmlFor="golf_club_size">Golf Club Size</Label>
-                <Input
-                  id="golf_club_size"
-                  name="golf_club_size"
-                  type="text"
-                  placeholder="Standard"
-                />
+                <Select value={golfClubSize} onValueChange={setGolfClubSize}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select your golf club size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="standard">
+                      Standard (5'7" - 6'1")
+                    </SelectItem>
+                    <SelectItem value="midsize">Midsize (+0.25")</SelectItem>
+                    <SelectItem value="oversize">Oversize (+0.5")</SelectItem>
+                    <SelectItem value="jumbo">Jumbo (+0.75")</SelectItem>
+                    <SelectItem value="undersize">
+                      Undersize (-0.25")
+                    </SelectItem>
+                    <SelectItem value="junior">Junior (Under 5'7")</SelectItem>
+                    <SelectItem value="tall">Tall (6'1" - 6'4")</SelectItem>
+                    <SelectItem value="extra_tall">
+                      Extra Tall (Over 6'4")
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>

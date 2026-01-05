@@ -20,6 +20,7 @@ import EditSwingAnalysisForm from "@/components/swing-analysis/swing-analysis";
 import DeleteConfirmationModal from "@/components/delete-confirmation";
 import { toast } from "sonner";
 import { getStatusStyles } from "@/lib/helper";
+import SwingAnalysisCalendar from "@/components/swing-analysis-calendar";
 import {
   Select,
   SelectContent,
@@ -40,7 +41,7 @@ interface User {
 interface SwingAnalysis {
   id: string;
   date: string;
-  status: string;
+  status: "submitted" | "scheduled" | "completed" | "canceled";
   comments: string;
   user: User;
 }
@@ -70,6 +71,7 @@ const Page = () => {
   const [analysisToDelete, setAnalysisToDelete] =
     useState<SwingAnalysis | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [viewMode, setViewMode] = useState<"table" | "calendar">("table");
 
   const handleDelete = async () => {
     if (!analysisToDelete) return;
@@ -113,7 +115,14 @@ const Page = () => {
         setSwingAnalyses(
           swingAnalyses.map((swingAnalyses) =>
             swingAnalyses.id === analysisId
-              ? { ...swingAnalyses, status: newStatus }
+              ? {
+                  ...swingAnalyses,
+                  status: newStatus as
+                    | "submitted"
+                    | "scheduled"
+                    | "completed"
+                    | "canceled",
+                }
               : swingAnalyses
           )
         );
@@ -188,198 +197,223 @@ const Page = () => {
       <section className={"w-[90%] space-y-2"}>
         <h1 className={"font-bold text-base uppercase"}>Swing Analysis</h1>
         <section className={"space-y-1"}>
-          {(session?.user as any)?.role === "admin" ? (
-            <></>
-          ) : (
-            <section className={"flex flex-row justify-between"}>
-              <div></div>
+          <section className={"flex flex-row justify-between"}>
+            <div className="flex space-x-2">
+              <Button
+                variant={viewMode === "table" ? "default" : "outline"}
+                onClick={() => setViewMode("table")}
+                className="m-0 py-0 px-3"
+              >
+                Table View
+              </Button>
+              <Button
+                variant={viewMode === "calendar" ? "default" : "outline"}
+                onClick={() => setViewMode("calendar")}
+                className="m-0 py-0 px-3"
+              >
+                Calendar View
+              </Button>
+            </div>
+            {(session?.user as any)?.role === "consumer" && (
               <Link href={"/swing-analysis/create"}>
                 <Button className={"m-0 py-0 px-2 pr-3"} variant={"default"}>
                   <Plus />
                   Schedule
                 </Button>
               </Link>
-            </section>
-          )}
+            )}
+          </section>
 
-          {swingAnalyses.length === 0 ? (
-            <div className="text-center py-4">
-              No swing analyses found. Click 'Schedule' to create a new one.
+          {viewMode === "calendar" ? (
+            <div className="w-full h-[calc(100vh-200px)]">
+              <SwingAnalysisCalendar swingAnalyses={swingAnalyses} />
             </div>
           ) : (
-            <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      #
-                    </th>
-                    {(session?.user as any)?.role === "admin" && (
-                      <>
+            <>
+              {swingAnalyses.length === 0 ? (
+                <div className="text-center py-4">
+                  No swing analyses found. Click 'Schedule' to create a new one.
+                </div>
+              ) : (
+                <div className="w-full border border-gray-200 rounded-lg overflow-hidden">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
                         <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                          Customer Name
+                          #
                         </th>
-                        <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                          Email
-                        </th>
-                        <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                          Phone
-                        </th>
-                      </>
-                    )}
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Date
-                    </th>
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Status
-                    </th>
-                    <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Comments
-                    </th>
-                    <th className="uppercase w-56 text-xs border text-gray-500 text-left border-gray-200 p-2">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {swingAnalyses.map((analysis, idx) => (
-                    <tr key={analysis.id}>
-                      <td className="border border-gray-200 p-2">{idx + 1}</td>
-                      {(session?.user as any)?.role === "admin" && (
-                        <>
-                          <td className="border border-gray-200 p-2">
-                            {analysis.user.name}
-                          </td>
-                          <td className="border border-gray-200 p-2">
-                            {analysis.user.email}
-                          </td>
-                          <td className="border border-gray-200 p-2 text-right">
-                            {analysis.user.phone}
-                          </td>
-                        </>
-                      )}
-                      <td className="border border-gray-200 p-2">
-                        {new Date(analysis.date).toLocaleString()}
-                      </td>
-                      <td
-                        className={`border border-gray-200 p-2 text-left ${getStatusStyles(
-                          analysis.status
-                        )}`}
-                      >
-                        {analysis.status}
-                      </td>
-                      <td className="border border-gray-200 p-2">
-                        {analysis.comments}
-                      </td>
-                      <td className="border border-gray-200 p-2">
-                        {(session?.user as any)?.role === "consumer" && (
-                          <div className={"flex space-x-1"}>
-                            <Button
-                              onClick={() => {
-                                setAnalysisToEdit(analysis);
-                                setIsEditSheetOpen(true);
-                              }}
-                              className={"m-0 py-0 px-2"}
-                              variant={"outline"}
-                            >
-                              <Pencil className={"text-red"} size={"20"} />
-                              Reschedule
-                            </Button>
-                            <Button
-                              disabled={analysis.status === "canceled"}
-                              className={"m-0 bg-red-500 py-0 px-2 pr-3"}
-                              variant={"default"}
-                              onClick={() => {
-                                setAnalysisToDelete(analysis);
-                                setIsDeleteModalOpen(true);
-                              }}
-                            >
-                              <XCircle
-                                color={"white"}
-                                className={"px-0 mx-0"}
-                                size={"20"}
-                              />
-                              <p className={"text-white"}>Cancel</p>
-                            </Button>
-                          </div>
-                        )}
                         {(session?.user as any)?.role === "admin" && (
-                          <Select
-                            onValueChange={(value) =>
-                              handleStatusChange(analysis.id, value)
-                            }
-                            defaultValue={analysis.status}
-                          >
-                            <SelectTrigger className="w-fit">
-                              <SelectValue placeholder="Update status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="submitted">
-                                <div
-                                  className={
-                                    "flex space-x-1 font-medium text-green-600 items-center"
-                                  }
-                                >
-                                  <BookA size={19} />
-                                  <p>Acknowledge Request</p>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="scheduled">
-                                <div
-                                  className={
-                                    "flex font-medium text-amber-700 space-x-1 items-center"
-                                  }
-                                >
-                                  <CalendarCheck size={18} />
-                                  <p>Schedule Swing Analysis</p>
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="completed">
-                                <div
-                                  className={
-                                    "flex space-x-1 font-medium text-blue-700 items-center"
-                                  }
-                                >
-                                  <CircleCheck size={18} />
-                                  <p>Fitting Completed</p>
-                                </div>
-                              </SelectItem>
-                              <SelectItem
-                                className={"text-red-500 font-medium"}
-                                value="canceled"
-                              >
-                                <div className={"flex space-x-1 items-center"}>
-                                  <Trash size={15} />
-                                  <p>Cancel Fitting</p>
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <>
+                            <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                              Customer Name
+                            </th>
+                            <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                              Email
+                            </th>
+                            <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                              Phone
+                            </th>
+                          </>
                         )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="bg-gray-100 py-1 px-1 flex justify-end">
-                <Button
-                  variant={"ghost"}
-                  className={"m-0 py-0 px-2"}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft />
-                </Button>
-                <Button
-                  variant={"ghost"}
-                  className={"m-0 py-0 px-2"}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronRight />
-                </Button>
-              </div>
-            </div>
+                        <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                          Date
+                        </th>
+                        <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                          Status
+                        </th>
+                        <th className="uppercase text-xs border text-gray-500 text-left border-gray-200 p-2">
+                          Comments
+                        </th>
+                        <th className="uppercase w-56 text-xs border text-gray-500 text-left border-gray-200 p-2">
+                          Action
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {swingAnalyses.map((analysis, idx) => (
+                        <tr key={analysis.id}>
+                          <td className="border border-gray-200 p-2">
+                            {idx + 1}
+                          </td>
+                          {(session?.user as any)?.role === "admin" && (
+                            <>
+                              <td className="border border-gray-200 p-2">
+                                {analysis.user.name}
+                              </td>
+                              <td className="border border-gray-200 p-2">
+                                {analysis.user.email}
+                              </td>
+                              <td className="border border-gray-200 p-2 text-right">
+                                {analysis.user.phone}
+                              </td>
+                            </>
+                          )}
+                          <td className="border border-gray-200 p-2">
+                            {new Date(analysis.date).toLocaleString()}
+                          </td>
+                          <td
+                            className={`border border-gray-200 p-2 text-left ${getStatusStyles(
+                              analysis.status
+                            )}`}
+                          >
+                            {analysis.status}
+                          </td>
+                          <td className="border border-gray-200 p-2">
+                            {analysis.comments}
+                          </td>
+                          <td className="border border-gray-200 p-2">
+                            {(session?.user as any)?.role === "consumer" && (
+                              <div className={"flex space-x-1"}>
+                                <Button
+                                  onClick={() => {
+                                    setAnalysisToEdit(analysis);
+                                    setIsEditSheetOpen(true);
+                                  }}
+                                  className={"m-0 py-0 px-2"}
+                                  variant={"outline"}
+                                >
+                                  <Pencil className={"text-red"} size={"20"} />
+                                  Reschedule
+                                </Button>
+                                <Button
+                                  disabled={analysis.status === "canceled"}
+                                  className={"m-0 bg-red-500 py-0 px-2 pr-3"}
+                                  variant={"default"}
+                                  onClick={() => {
+                                    setAnalysisToDelete(analysis);
+                                    setIsDeleteModalOpen(true);
+                                  }}
+                                >
+                                  <XCircle
+                                    color={"white"}
+                                    className={"px-0 mx-0"}
+                                    size={"20"}
+                                  />
+                                  <p className={"text-white"}>Cancel</p>
+                                </Button>
+                              </div>
+                            )}
+                            {(session?.user as any)?.role === "admin" && (
+                              <Select
+                                onValueChange={(value) =>
+                                  handleStatusChange(analysis.id, value)
+                                }
+                                defaultValue={analysis.status}
+                              >
+                                <SelectTrigger className="w-fit">
+                                  <SelectValue placeholder="Update status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="submitted">
+                                    <div
+                                      className={
+                                        "flex space-x-1 font-medium text-green-600 items-center"
+                                      }
+                                    >
+                                      <BookA size={19} />
+                                      <p>Acknowledge Request</p>
+                                    </div>
+                                  </SelectItem>
+                                  <SelectItem value="scheduled">
+                                    <div
+                                      className={
+                                        "flex font-medium text-amber-700 space-x-1 items-center"
+                                      }
+                                    >
+                                      <CalendarCheck size={18} />
+                                      <p>Schedule Swing Analysis</p>
+                                    </div>
+                                  </SelectItem>
+                                  <SelectItem value="completed">
+                                    <div
+                                      className={
+                                        "flex space-x-1 font-medium text-blue-700 items-center"
+                                      }
+                                    >
+                                      <CircleCheck size={18} />
+                                      <p>Fitting Completed</p>
+                                    </div>
+                                  </SelectItem>
+                                  <SelectItem
+                                    className={"text-red-500 font-medium"}
+                                    value="canceled"
+                                  >
+                                    <div
+                                      className={"flex space-x-1 items-center"}
+                                    >
+                                      <Trash size={15} />
+                                      <p>Cancel Fitting</p>
+                                    </div>
+                                  </SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="bg-gray-100 py-1 px-1 flex justify-end">
+                    <Button
+                      variant={"ghost"}
+                      className={"m-0 py-0 px-2"}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      <ChevronLeft />
+                    </Button>
+                    <Button
+                      variant={"ghost"}
+                      className={"m-0 py-0 px-2"}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      <ChevronRight />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </section>
       </section>

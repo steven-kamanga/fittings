@@ -9,6 +9,7 @@
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+/home/drplxrd/Documents/Projects/fittings/node_modules
 
 # testing
 /coverage

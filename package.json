@@ -1,0 +1,24 @@
+{
+  "name": "fittings",
+  "version": "1.0.0",
+  "description": "A simple full-stack web application for scheduling golf fittings and swing analysis sessions. Built with **Next.js 15**, **Node.js/Express**, **PostgreSQL**, **TailwindCSS**, **shadcn/ui**, and **NextAuth.js** for authentication.",
+  "homepage": "https://github.com/steven-kamanga/fittings#readme",
+  "bugs": {
+    "url": "https://github.com/steven-kamanga/fittings/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/steven-kamanga/fittings.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"cd fittings && bun run dev\" \"cd fittings_api && bun run dev\"",
+    "start": "concurrently \"cd fittings && bun run start\" \"cd fittings_api && bun run start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

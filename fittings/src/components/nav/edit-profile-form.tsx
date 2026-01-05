@@ -8,6 +8,13 @@ import { toast } from "sonner";
 import axios from "axios";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Textarea } from "../ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const EditProfileForm = ({
   user,
@@ -119,14 +126,26 @@ const EditProfileForm = ({
 
       <div className="space-y-2">
         <Label htmlFor="golf_club_size">Golf Club Size</Label>
-        <Input
-          id="golf_club_size"
+        <Select
           value={formData.golf_club_size}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, golf_club_size: e.target.value }))
+          onValueChange={(value) =>
+            setFormData((prev) => ({ ...prev, golf_club_size: value }))
           }
-          placeholder="Enter your golf club size"
-        />
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select your golf club size" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="standard">Standard (5'7" - 6'1")</SelectItem>
+            <SelectItem value="midsize">Midsize (+0.25")</SelectItem>
+            <SelectItem value="oversize">Oversize (+0.5")</SelectItem>
+            <SelectItem value="jumbo">Jumbo (+0.75")</SelectItem>
+            <SelectItem value="undersize">Undersize (-0.25")</SelectItem>
+            <SelectItem value="junior">Junior (Under 5'7")</SelectItem>
+            <SelectItem value="tall">Tall (6'1" - 6'4")</SelectItem>
+            <SelectItem value="extra_tall">Extra Tall (Over 6'4")</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {error && <p className="text-red-500 text-sm">{error}</p>}
