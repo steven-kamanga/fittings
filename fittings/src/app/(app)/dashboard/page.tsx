@@ -93,7 +93,6 @@ export default function Page() {
           </section>
           <section className="space-y-3">
             <div className="flex items-center gap-2">
-              <Target className="h-4 w-4 text-gray-900" />
               <h2 className="text-lg font-semibold text-yellow-700">
                 Getting Started
               </h2>
@@ -179,17 +178,6 @@ export default function Page() {
                     Getting Started
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">Learn more</p>
-                </div>
-              </Link>
-
-              {/* Profile */}
-              <Link href="#">
-                <div className="flex flex-col items-center justify-center p-8 hover:bg-gray-50 transition-colors group text-center">
-                  <User className="h-6 w-6 text-gray-900 mb-3" />
-                  <h3 className="text-base font-semibold text-gray-900">
-                    My Profile
-                  </h3>
-                  <p className="text-sm text-gray-500 mt-1">Edit profile</p>
                 </div>
               </Link>
             </div>
